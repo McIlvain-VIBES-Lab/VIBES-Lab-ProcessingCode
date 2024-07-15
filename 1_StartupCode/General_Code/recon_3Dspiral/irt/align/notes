@@ -1,0 +1,6 @@
+
+note:
+the KronProd kronecker product class by Matt Jacobson
+may be useful for refining some of these operations.
+
+http://www.mathworks.com/matlabcentral/fileexchange/25969-efficient-object-oriented-kronecker-product-manipulation

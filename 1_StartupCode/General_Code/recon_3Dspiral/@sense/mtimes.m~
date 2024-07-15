@@ -1,0 +1,29 @@
+ function vo = mtimes(a, vi)
+%	MRI "forward projection" y=A*x and backprojection x = (A')*y
+
+if a.is.empty
+	error empty
+end
+
+if 0
+ss = a.sen;
+mm = size(ss,2);
+if (mm~=2)
+  sprintf('CODE ONLY GOOD FOR TWO COIL DATA!!')
+  keyboard
+end
+nn = length(a.kx);
+end
+
+
+if ~a.is.transpose
+	vo = mvss(a.kx, a.ky, a.t, a.we, vi(:), a.xval, a.yval, 0, a.sen);
+	%vo = mvssrect(a.kx, a.ky, a.t, a.we, vi(:), a.xval, a.yval, 0, a.sen, a.fov, a.n);
+         %vo = [mvss(a.kx,a.ky,a.t,a.we,ss(:,1).*vi(:),a.xval,a.yval,0,ones(4096,1));mvss(a.kx,a.ky,a.t,a.we,ss(:,2).*vi(:),a.xval,a.yval,0,ones(4096,1))];
+else
+	vo = mvss(a.kx, a.ky, a.t, a.we, vi(:), a.xval, a.yval, 1, a.sen);
+	%vo = mvssrect(a.kx, a.ky, a.t, a.we, vi(:), a.xval, a.yval, 1, a.sen, a.fov, a.n);
+        %inter1 = mvss(a.kx, a.ky, a.t, a.we, vi(1:nn), a.xval, a.yval, 1, ones(4096,1));
+        %inter2 = mvss(a.kx, a.ky, a.t, a.we, vi((nn+1):end), a.xval, a.yval, 1, ones(4096,1));
+	%vo = (ss(:,1)').' .* inter1+(ss(:,2)').' .*inter2;
+end

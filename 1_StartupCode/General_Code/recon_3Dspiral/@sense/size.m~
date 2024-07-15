@@ -1,0 +1,10 @@
+function dim = size(ob)
+%function dim = size(ob)
+%       "size" method for Gtomo2 class
+
+AA = ob.A;
+sen = ob.sen;
+nc = size(sen,2);
+
+dim = [nc*size(AA.tt,1) size(AA.we,1)];
+

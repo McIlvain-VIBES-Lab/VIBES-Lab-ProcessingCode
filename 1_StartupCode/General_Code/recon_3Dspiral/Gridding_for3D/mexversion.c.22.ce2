@@ -1,0 +1,50 @@
+
+;; Function mexVersion
+
+(note 2 0 3 NOTE_INSN_DELETED 0)
+
+(note 3 2 20 NOTE_INSN_FUNCTION_BEG 0)
+
+;; Start of basic block 0, registers live: 6 [bp] 7 [sp] 20 [frame]
+(note 20 3 22 [bb 0] NOTE_INSN_BASIC_BLOCK 0)
+
+(insn/f 22 20 24 (set (mem:SI (pre_dec:SI (reg:SI 7 esp)) 0)
+        (reg:SI 6 ebp)) -1 (nil)
+    (nil))
+
+(insn/f 24 22 25 (set (reg:SI 6 ebp)
+        (reg:SI 7 esp)) -1 (nil)
+    (nil))
+
+(note 25 24 9 NOTE_INSN_PROLOGUE_END 0)
+
+(insn 9 25 11 (set (reg:SI 0 eax)
+        (mem/f:SI (symbol_ref:SI ("version")) 0)) 33 {*movsi_1} (nil)
+    (nil))
+
+(insn 11 9 19 (use (reg/i:SI 0 eax)) -1 (insn_list 9 (insn_list 9 (nil)))
+    (nil))
+
+(insn 19 11 26 (use (reg/i:SI 0 eax)) -1 (insn_list 11 (nil))
+    (nil))
+
+(note 26 19 27 NOTE_INSN_EPILOGUE_BEG 0)
+
+(insn 27 26 28 (parallel[ 
+            (set (reg:SI 6 ebp)
+                (mem:SI (reg:SI 7 esp) 0))
+            (set (reg:SI 7 esp)
+                (plus:SI (reg:SI 7 esp)
+                    (const_int 4 [0x4])))
+        ] ) -1 (nil)
+    (nil))
+
+(jump_insn 28 27 29 (return) -1 (nil)
+    (nil))
+;; End of basic block 0, registers live:
+ 0 [ax] 6 [bp] 7 [sp] 20 [frame]
+
+(barrier 29 28 21)
+
+(note 21 29 0 NOTE_INSN_DELETED 0)
+

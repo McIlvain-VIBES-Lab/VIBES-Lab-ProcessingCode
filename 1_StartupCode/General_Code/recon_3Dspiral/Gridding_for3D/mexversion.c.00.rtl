@@ -1,0 +1,30 @@
+
+;; Function mexVersion
+
+(note 2 0 3 NOTE_INSN_DELETED 0)
+
+(note 3 2 9 NOTE_INSN_FUNCTION_BEG 0)
+
+(insn 9 3 11 (set (reg:SI 43)
+        (mem/f:SI (symbol_ref:SI ("version")) 0)) -1 (nil)
+    (nil))
+
+(insn 11 9 12 (set (reg/i:SI 0 eax)
+        (reg:SI 43)) -1 (nil)
+    (nil))
+
+(jump_insn 12 11 13 (set (pc)
+        (label_ref 18)) -1 (nil)
+    (nil))
+
+(barrier 13 12 15)
+
+(note 15 13 17 NOTE_INSN_FUNCTION_END 0)
+
+(insn 17 15 18 (clobber (reg/i:SI 0 eax)) -1 (nil)
+    (nil))
+
+(code_label 18 17 19 2 "" "" [0 uses])
+
+(insn 19 18 0 (use (reg/i:SI 0 eax)) -1 (nil)
+    (nil))

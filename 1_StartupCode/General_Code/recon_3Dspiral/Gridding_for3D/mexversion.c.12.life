@@ -1,0 +1,36 @@
+
+;; Function mexVersion
+
+44 registers.
+
+Register 43 used 2 times across 2 insns in block 0; set 1 time.
+
+1 basic blocks, 2 edges.
+
+Basic block 0: first insn 20, last 19, loop_depth 0, count 0.
+Predecessors:  ENTRY (fallthru)
+Successors:  EXIT (fallthru)
+Registers live at start: 6 [bp] 7 [sp] 20 [frame]
+Registers live at end: 0 [ax] 6 [bp] 7 [sp] 20 [frame]
+
+(note 2 0 3 NOTE_INSN_DELETED 0)
+
+(note 3 2 20 NOTE_INSN_FUNCTION_BEG 0)
+
+;; Start of basic block 0, registers live: 6 [bp] 7 [sp] 20 [frame]
+(note 20 3 9 [bb 0] NOTE_INSN_BASIC_BLOCK 0)
+
+(insn 9 20 11 (set (reg:SI 43)
+        (mem/f:SI (symbol_ref:SI ("version")) 0)) 33 {*movsi_1} (nil)
+    (nil))
+
+(insn 11 9 19 (set (reg/i:SI 0 eax)
+        (reg:SI 43)) 33 {*movsi_1} (insn_list 9 (nil))
+    (expr_list:REG_DEAD (reg:SI 43)
+        (nil)))
+
+(insn 19 11 0 (use (reg/i:SI 0 eax)) -1 (insn_list 11 (nil))
+    (nil))
+;; End of basic block 0, registers live:
+ 0 [ax] 6 [bp] 7 [sp] 20 [frame]
+

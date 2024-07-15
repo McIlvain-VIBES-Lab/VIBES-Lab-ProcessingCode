@@ -1,0 +1,59 @@
+function ob = mri(kx, ky, t, we, xval, yval, sen, fov, N)
+%function ob = mri(kx, ky, t, we, xval, yval, sen, fov, N)
+%	Construct MRI object, which can do Ax and A'y operations
+
+% This is an attempt to make MRI object valid for sensitivity
+%   encoded runs also
+
+%	default object
+ob.kx = 0;	% should these be []'s
+ob.ky = 0;
+ob.t = 0;
+ob.we = 0;
+ob.xval = 0;
+ob.yval = 0;
+ob.sen = 0;
+ob.is.empty	= logical(1);
+ob.is.transpose = logical(0);
+ob.fov = 0;  %FOV in cm's
+ob.n = 0;
+%ob.version = 1.0;
+
+if nargin == 0
+	ob = class(ob, 'mri');
+	return
+end
+
+if isa(kx, 'mri')
+	ob = kx;
+	return
+end
+
+if nargin ~= 9  %7
+	help mri
+	error nargin
+end
+
+	%	fill object
+	ob.kx = kx;
+	ob.ky = ky;
+	ob.t = t;
+	ob.we = we;
+	ob.xval = xval;
+	ob.yval = yval;
+	ob.sen = sen;
+        ob.fov = fov;
+        ob.n = N;        
+
+	ob.is.empty	= logical(0);
+
+%	ob.m = size(we);	% image size
+%	ob.n = size(we);
+
+	ob = class(ob, 'mri');
+
+
+
+
+
+
