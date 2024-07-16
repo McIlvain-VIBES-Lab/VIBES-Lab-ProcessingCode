@@ -8,7 +8,7 @@ antsdir = getenv('ANTSDIR');
 antsdirmpath = sprintf('%s/etc/matlab',fsldir);
 path(path, antsdirmpath); % set new path 'fsldirmpath'
 clear fsldir fsldirmpath;
-%hi Grace
+
 addpath(sprintf('%s/General_Code',pwd))
 
 addpath(sprintf('%s/General_Code/recon_3Dspiral',pwd))
