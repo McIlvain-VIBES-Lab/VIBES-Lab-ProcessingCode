@@ -1,0 +1,193 @@
+cd /Volumes/CLJ-001/Group/drsmitty/ScanData/Multi/170816/Clj_Multiexcite_04_02/Cljohnson_Ep2D_Mre/MRE/AP
+load Buckyout.mat
+load slowfasttwo.mat
+load 170816_Multiexcite_04_02_AP.mat
+[percent20_AP,Unorms_AP,perc20_AP] = percent(A1x,A2x,U_s_V1,U_f_V1,U_s_V2,U_f_V2,mask);
+U_s = U_s_V1+U_s_V2;
+totalvox = sum(sum(sum(abs(U_s)>0)));
+V1_AP = V1x; V2_AP = V2x;
+
+cd /Volumes/CLJ-001/Group/drsmitty/ScanData/Multi/170816/Clj_Multiexcite_04_02/Cljohnson_Ep2D_Mre/MRE/LR
+load Buckyout.mat
+load slowfasttwo.mat
+load 170816_Multiexcite_04_02_LR.mat
+[percent20_LR,Unorms_LR,perc20_LR] = percent(A1x,A2x,U_s_V1,U_f_V1,U_s_V2,U_f_V2,mask);
+V1_LR = V1x; V2_LR = V2x;
+
+cd /Volumes/CLJ-001/Group/drsmitty/ScanData/Multi/170816/Clj_Multiexcite_04_02/Cljohnson_Ep2D_Mre/MRE/SI
+load Buckyout.mat
+load slowfasttwo.mat
+load 170816_Multiexcite_04_02_SI.mat
+[percent20_SI,Unorms_SI,perc20_SI] = percent(A1x,A2x,U_s_V1,U_f_V1,U_s_V2,U_f_V2,mask);
+V1_SI = V1x; V2_SI = V2x;
+
+%% Theta Differences between Wave propagations
+
+diff_V1AP_V1LR = rad2deg(abs(acos(dot(V1_AP,V1_LR,4))))>15; % AP1 vs LR1
+diff_V1AP_V1SI = rad2deg(abs(acos(dot(V1_AP,V1_SI,4))))>15; % AP1 vs SI1
+diff_V1AP_V2AP = rad2deg(abs(acos(dot(V1_AP,V2_AP,4))))>15; % AP1 vs AP2
+diff_V1AP_V2LR = rad2deg(abs(acos(dot(V1_AP,V2_LR,4))))>15; % AP1 vs LR2
+diff_V1AP_V2SI = rad2deg(abs(acos(dot(V1_AP,V2_SI,4))))>15; % AP1 vs SI2
+diff_V1LR_V1SI = rad2deg(abs(acos(dot(V1_LR,V1_SI,4))))>15; % LR1 vs SI1
+diff_V1LR_V2AP = rad2deg(abs(acos(dot(V1_LR,V2_AP,4))))>15; % LR1 vs AP2
+diff_V1LR_V2LR = rad2deg(abs(acos(dot(V1_LR,V2_LR,4))))>15; % LR1 vs LR2
+diff_V1LR_V2SI = rad2deg(abs(acos(dot(V1_LR,V2_SI,4))))>15; % LR1 vs SI2
+diff_V1SI_V2AP = rad2deg(abs(acos(dot(V1_SI,V2_AP,4))))>15; % SI1 vs AP2
+diff_V1SI_V2LR = rad2deg(abs(acos(dot(V1_SI,V2_LR,4))))>15; % SI1 vs LR2
+diff_V1SI_V2SI = rad2deg(abs(acos(dot(V1_SI,V2_SI,4))))>15; % SI1 vs SI2
+diff_V2AP_V2LR = rad2deg(abs(acos(dot(V2_AP,V2_LR,4))))>15; % AP2 vs LR2
+diff_V2AP_V2SI = rad2deg(abs(acos(dot(V2_AP,V2_SI,4))))>15; % AP2 vs SI2
+diff_V2LR_V2SI = rad2deg(abs(acos(dot(V2_LR,V2_SI,4))))>15; % LR2 vs SI2
+
+% montagestack(diff_V1AP_V1LR>0); montagestack(diff_V1AP_V1SI>0); montagestack(diff_V1AP_V2AP>0); montagestack(diff_V1AP_V2LR>0); montagestack(diff_V1AP_V2SI>0);
+% montagestack(diff_V1LR_V1SI>0); montagestack(diff_V1LR_V2AP>0); montagestack(diff_V1LR_V2LR>0); montagestack(diff_V1LR_V2SI>0);
+% montagestack(diff_V1SI_V2AP>0); montagestack(diff_V1SI_V2LR>0); montagestack(diff_V1SI_V2SI>0); montagestack(diff_V2AP_V2LR>0); montagestack(diff_V2AP_V2SI>0);
+% montagestack(diff_V2LR_V2SI>0); 
+
+%% Slow/Fast percentages 
+
+Us1norm_AP = abs(Unorms_AP(:,:,:,1)); Uf1norm_AP = abs(Unorms_AP(:,:,:,2)); Us2norm_AP = abs(Unorms_AP(:,:,:,3)); Uf2norm_AP = abs(Unorms_AP(:,:,:,4));
+Us1norm_LR = abs(Unorms_LR(:,:,:,1)); Uf1norm_LR = abs(Unorms_LR(:,:,:,2)); Us2norm_LR = abs(Unorms_LR(:,:,:,3)); Uf2norm_LR = abs(Unorms_LR(:,:,:,4));
+Us1norm_SI = abs(Unorms_SI(:,:,:,1)); Uf1norm_SI = abs(Unorms_SI(:,:,:,2)); Us2norm_SI = abs(Unorms_AP(:,:,:,3)); Uf2norm_SI = abs(Unorms_AP(:,:,:,4));
+Uall_AP = Us1norm_AP+Uf1norm_AP+Us2norm_AP+Uf2norm_AP; Uall_LR = Us1norm_LR+Uf1norm_LR+Us2norm_LR+Uf2norm_LR; Uall_SI = Us1norm_SI+Uf1norm_SI+Us2norm_SI+Uf2norm_SI;
+
+% Slow and fast percentages
+Usperc_AP = (Us1norm_AP+Us2norm_AP)./Uall_AP; Ufperc_AP = (Uf1norm_AP+Uf2norm_AP)./Uall_AP;
+Usperc_LR = (Us1norm_LR+Us2norm_LR)./Uall_LR; Ufperc_LR = (Uf1norm_LR+Uf2norm_LR)./Uall_LR;
+Usperc_SI = (Us1norm_SI+Us2norm_SI)./Uall_SI; Ufperc_SI = (Uf1norm_SI+Uf2norm_SI)./Uall_SI;
+
+Usperc = cat(4,Usperc_AP,Usperc_LR,Usperc_SI); Ufperc = cat(4,Ufperc_AP,Ufperc_LR,Ufperc_SI); Uperc = cat(5,Usperc,Ufperc);
+
+%% Slow/Fast waves amounts over 20% of wave magnitude
+Us1perc20_AP = perc20_AP(:,:,:,1); Uf1perc20_AP = perc20_AP(:,:,:,2); Us2perc20_AP = perc20_AP(:,:,:,3); Uf2perc20_AP = perc20_AP(:,:,:,4);
+Us1perc20_LR = perc20_LR(:,:,:,1); Uf1perc20_LR = perc20_LR(:,:,:,2); Us2perc20_LR = perc20_LR(:,:,:,3); Uf2perc20_LR = perc20_LR(:,:,:,4);
+Us1perc20_SI = perc20_SI(:,:,:,1); Uf1perc20_SI = perc20_SI(:,:,:,2); Us2perc20_SI = perc20_SI(:,:,:,3); Uf2perc20_SI = perc20_SI(:,:,:,4);
+
+Us1perc_all = Us1perc20_AP+Us1perc20_LR+Us1perc20_SI; Uf1perc_all = Uf1perc20_AP+Uf1perc20_LR+Uf1perc20_SI;
+Us2perc_all = Us2perc20_AP+Us2perc20_LR+Us2perc20_SI; Uf2perc_all = Uf2perc20_AP+Uf2perc20_LR+Uf2perc20_SI;
+
+UsAP = Us1perc20_AP+Us2perc20_AP; UfAP = Uf1perc20_AP+Uf2perc20_AP;
+UsLR = Us1perc20_LR+Us2perc20_LR; UfLR = Uf1perc20_LR+Uf2perc20_LR;
+UsSI = Us1perc20_SI+Us2perc20_SI; UfSI = Uf1perc20_SI+Uf2perc20_SI;
+Uslowall = cat(4,UsAP,UsLR,UsSI); Ufastall = cat(4,UfAP,UfLR,UfSI);
+UAPall = Us1perc20_AP+Uf1perc20_AP+Us2perc20_AP+Uf2perc20_AP; ULRall = Us1perc20_LR+Uf1perc20_LR+Us2perc20_LR+Uf2perc20_LR;
+USIall = Us1perc20_SI+Uf1perc20_SI+Us2perc20_SI+Uf2perc20_SI; Usall = Us1perc_all+Us2perc_all; Ufall = Uf1perc_all+Uf2perc_all;
+
+
+UAPallperc = sum(sum(sum(UAPall==4)))/totalvox; ULRallperc = sum(sum(sum(ULRall==4)))/totalvox; USIallperc = sum(sum(sum(USIall==4)))/totalvox;
+Uallslowperc = sum(sum(sum(Usall>=2)))/totalvox;Uallfastperc = sum(sum(sum(Ufall>=2)))/totalvox;
+Uallallperc = sum(sum(sum((Usall>=2).*(Ufall>=2))))/totalvox;
+
+Uall = [UAPallperc,ULRallperc,USIallperc,Uallallperc];
+
+%% Tweten Criteria for wave magnitudes inclusion (differentiating between waves)
+V1s_AP = zeros(80,80,48); V1f_AP = zeros(80,80,48); V2s_AP = zeros(80,80,48); V2f_AP = zeros(80,80,48);
+V1s_LR = zeros(80,80,48); V1f_LR = zeros(80,80,48); V2s_LR = zeros(80,80,48); V2f_LR = zeros(80,80,48);
+V1s_SI = zeros(80,80,48); V1f_SI = zeros(80,80,48); V2s_SI = zeros(80,80,48); V2f_SI = zeros(80,80,48);
+
+for ii = 1:80
+    for jj = 1:80
+        for kk = 1:48
+            if Us1perc20_AP(ii,jj,kk) == 1
+                V1s_AP(ii,jj,kk) = 1;
+            end
+            if Uf1perc20_AP(ii,jj,kk) == 1
+                V1f_AP(ii,jj,kk) = 1;
+            end
+            if Us2perc20_AP(ii,jj,kk) == 1
+                V2s_AP(ii,jj,kk) = 1;
+            end
+            if Uf2perc20_AP(ii,jj,kk) == 1
+                V2f_AP(ii,jj,kk) = 1;
+            end
+            if Us1perc20_LR(ii,jj,kk) == 1 && diff_V1AP_V1LR(ii,jj,kk) == 1 && diff_V1LR_V2AP(ii,jj,kk) == 1
+                V1s_LR(ii,jj,kk) = 1;
+            end
+            if Uf1perc20_LR(ii,jj,kk) == 1 && diff_V1AP_V1LR(ii,jj,kk) == 1 && diff_V1LR_V2AP(ii,jj,kk) == 1
+                V1f_LR(ii,jj,kk) = 1;
+            end
+            if Us2perc20_LR(ii,jj,kk) == 1 && diff_V1AP_V1LR(ii,jj,kk) == 1 && diff_V1LR_V2AP(ii,jj,kk) == 1
+                V2s_LR(ii,jj,kk) = 1;
+            end
+            if Uf2perc20_LR(ii,jj,kk) == 1 && diff_V1AP_V2LR(ii,jj,kk) == 1 && diff_V2AP_V2LR(ii,jj,kk) == 1
+                V2f_LR(ii,jj,kk) = 1;
+            end
+            if Us1perc20_SI(ii,jj,kk) == 1 && diff_V1AP_V1SI(ii,jj,kk) == 1 && diff_V1SI_V2AP(ii,jj,kk) == 1 && diff_V1LR_V1SI(ii,jj,kk) == 1 && diff_V1SI_V2LR(ii,jj,kk) == 1
+                V1s_SI(ii,jj,kk) = 1;
+            end
+            if Uf1perc20_SI(ii,jj,kk) == 1 && diff_V1AP_V1SI(ii,jj,kk) == 1 && diff_V1SI_V2AP(ii,jj,kk) == 1 && diff_V1LR_V1SI(ii,jj,kk) == 1 && diff_V1SI_V2LR(ii,jj,kk) == 1
+                V1f_SI(ii,jj,kk) = 1;
+            end
+            if Us2perc20_SI(ii,jj,kk) == 1 && diff_V1AP_V2SI(ii,jj,kk) == 1 && diff_V2AP_V2SI(ii,jj,kk) == 1 && diff_V1LR_V2SI(ii,jj,kk) == 1 && diff_V2LR_V2SI(ii,jj,kk) == 1
+                V2s_LR(ii,jj,kk) = 1;
+            end
+            if Uf2perc20_SI(ii,jj,kk) == 1 && diff_V1AP_V2SI(ii,jj,kk) == 1 && diff_V2AP_V2SI(ii,jj,kk) == 1 && diff_V1LR_V2SI(ii,jj,kk) == 1 && diff_V2LR_V2SI(ii,jj,kk) == 1
+                V2f_SI(ii,jj,kk) = 1;
+            end
+        end
+    end
+end
+
+V1sAP_cp = sum(sum(sum(V1s_AP)))/totalvox; V1fAP_cp = sum(sum(sum(V1f_AP)))/totalvox; V2sAP_cp = sum(sum(sum(V2s_AP)))/totalvox; V2fAP_cp = sum(sum(sum(V2f_AP)))/totalvox;
+V1sLR_cp = sum(sum(sum(V1s_LR)))/totalvox; V1fLR_cp = sum(sum(sum(V1f_LR)))/totalvox; V2sLR_cp = sum(sum(sum(V2s_LR)))/totalvox; V2fLR_cp = sum(sum(sum(V2f_LR)))/totalvox;
+V1sSI_cp = sum(sum(sum(V1s_SI)))/totalvox; V1fSI_cp = sum(sum(sum(V1f_SI)))/totalvox; V2sSI_cp = sum(sum(sum(V2s_SI)))/totalvox; V2fSI_cp = sum(sum(sum(V2f_SI)))/totalvox;
+
+VtotAP = V1s_AP+V1f_AP+V2s_AP+V2f_AP; VslowAP = V1s_AP+V2s_AP; VfastAP = V1f_AP+V2f_AP;
+VtotLR = V1s_LR+V1f_LR+V2s_LR+V2f_LR; VslowLR = V1s_LR+V2s_LR; VfastLR = V1f_LR+V2f_LR;
+VtotSI = V1s_SI+V1f_SI+V2s_SI+V2f_SI; VslowSI = V1s_SI+V2s_SI; VfastSI = V1f_SI+V2f_SI;
+Vslowall_c = V1s_AP+V1s_LR+V1s_SI+V2s_AP+V2s_LR+V2s_SI; Vfastall_c = V1f_AP+V1f_LR+V1f_SI+V2f_AP+V2f_LR+V2f_SI;
+Vall_c = Vslowall_c+Vfastall_c;
+Vmult = (Vslowall_c>=2).*(Vfastall_c>=2);
+
+VAPall_cp = sum(sum(sum(VtotAP==4)))/totalvox; VLRall_cp = sum(sum(sum(VtotLR==4)))/totalvox; VSIall_cp = sum(sum(sum(VtotSI==4)))/totalvox;
+Vslowperc = sum(sum(sum(Vslowall_c>=2)))/totalvox; Vfastperc = sum(sum(sum(Vfastall_c>=2)))/totalvox;
+Vallallperc = sum(sum(sum((Vslowall_c>=2).*(Vfastall_c>=2))))/totalvox;
+
+TW_cps = [VAPall_cp,VLRall_cp,VSIall_cp,Vallallperc];
+Vslow = cat(4,VslowAP,VslowLR,VslowSI,Vslowall_c);
+Vfast = cat(4,VfastAP,VfastLR,VfastSI,Vfastall_c);
+
+cd /Volumes/CLJ-001/Group/drsmitty/ScanData/Multi/170816/Clj_Multiexcite_04_02/Cljohnson_Ep2D_Mre/Tracts
+CCx = load_nii('tractsCC.nii'); CC = CCx.img>0.25; CC = flip(flip(permute(CC,[2 1 3]),1),2);
+CRx = load_nii('tractsCR.nii'); CR = CRx.img>0.25; CR = flip(flip(permute(CR,[2 1 3]),1),2);
+CCSx = load_nii('tractsCCS.nii'); CCS = CCSx.img>0.25; CCS = flip(flip(permute(CCS,[2 1 3]),1),2);
+SLFx = load_nii('tractsSLF.nii'); SLF = SLFx.img>0.25; SLF = flip(flip(permute(SLF,[2 1 3]),1),2);
+cd ..
+
+VtotslowCC = Vslowall_c.*CC; VtotfastCC = Vfastall_c.*CC; totalvoxCC = sum(sum(sum(CC.*(abs(U_s)>0))));
+VslowpercCC = sum(sum(sum(VtotslowCC>=2)))/totalvoxCC; VfastpercCC = sum(sum(sum(VtotfastCC>=2)))/totalvoxCC;
+VallallpercCC = sum(sum(sum((VtotslowCC>=2).*(VtotfastCC>=2))))/totalvoxCC;
+
+VtotslowCR = Vslowall_c.*CR; VtotfastCR = Vfastall_c.*CR; totalvoxCR = sum(sum(sum(CR.*(abs(U_s)>0))));
+VslowpercCR = sum(sum(sum(VtotslowCR>=2)))/totalvoxCR; VfastpercCR = sum(sum(sum(VtotfastCR>=2)))/totalvoxCR;
+VallallpercCR = sum(sum(sum((VtotslowCR>=2).*(VtotfastCR>=2))))/totalvoxCR;
+
+VtotslowCCS = Vslowall_c.*CCS; VtotfastCCS = Vfastall_c.*CCS; totalvoxCCS = sum(sum(sum(CCS.*(abs(U_s)>0))));
+VslowpercCCS = sum(sum(sum(VtotslowCCS>=2)))/totalvoxCCS; VfastpercCCS = sum(sum(sum(VtotfastCCS>=2)))/totalvoxCCS;
+VallallpercCCS = sum(sum(sum((VtotslowCCS>=2).*(VtotfastCCS>=2))))/totalvoxCCS;
+
+VtotslowSLF = Vslowall_c.*SLF; VtotfastSLF = Vfastall_c.*SLF; totalvoxSLF = sum(sum(sum(SLF.*(abs(U_s)>0))));
+VslowpercSLF = sum(sum(sum(VtotslowSLF>=2)))/totalvoxSLF; VfastpercSLF = sum(sum(sum(VtotfastSLF>=2)))/totalvoxSLF;
+VallallpercSLF = sum(sum(sum((VtotslowSLF>=2).*(VtotfastSLF>=2))))/totalvoxSLF;
+
+TW_tracts = [VallallpercCC,VallallpercCR,VallallpercCCS,VallallpercSLF];
+
+
+save('SlowFastSummation.mat','Uall','TW_cps','TW_tracts','Vslow','Vfast','Uslowall','Ufastall','Vmult')
+
+
+
+% Us1APsum = sum(sum(sum(Us1perc20_AP))); Uf1APsum = sum(sum(sum(Uf1perc20_AP))); Us2APsum = sum(sum(sum(Us2perc20_AP))); Uf2APsum = sum(sum(sum(Uf2perc20_AP)));
+% Us1LRsum = sum(sum(sum(Us1perc20_LR))); Uf1LRsum = sum(sum(sum(Uf1perc20_LR))); Us2LRsum = sum(sum(sum(Us2perc20_LR))); Uf2LRsum = sum(sum(sum(Uf2perc20_LR)));
+% Us1SIsum = sum(sum(sum(Us1perc20_SI))); Uf1SIsum = sum(sum(sum(Uf1perc20_SI))); Us2SIsum = sum(sum(sum(Us2perc20_SI))); Uf2SIsum = sum(sum(sum(Uf2perc20_SI)));
+% Us1allsum = sum(sum(sum(Us1perc_all>0))); Uf1allsum = sum(sum(sum(Uf1perc_all>0))); Us2allsum = sum(sum(sum(Us2perc_all>0))); Uf2allsum = sum(sum(sum(Uf2perc_all>0)));
+% 
+% Us1APperc = Us1APsum/totalvox; Uf1APperc = Uf1APsum/totalvox; Us2APperc = Us2APsum/totalvox; Uf2APperc = Uf2APsum/totalvox;
+% Us1LRperc = Us1LRsum/totalvox; Uf1LRperc = Uf1LRsum/totalvox; Us2LRperc = Us2LRsum/totalvox; Uf2LRperc = Uf2LRsum/totalvox;
+% Us1SIperc = Us1SIsum/totalvox; Uf1SIperc = Uf1SIsum/totalvox; Us2SIperc = Us2SIsum/totalvox; Uf2SIperc = Uf2SIsum/totalvox;
+% Us1allperc = Us1allsum/totalvox; Uf1allperc = Uf1allsum/totalvox; Us2allperc = Us2allsum/totalvox; Uf2allperc = Uf2allsum/totalvox;
+
+% UAPperc = [Us1APperc,Uf1APperc,Us2APperc,Uf2APperc];
+% ULRperc = [Us1LRperc,Uf1LRperc,Us2LRperc,Uf2LRperc];
+% USIperc = [Us1SIperc,Uf1SIperc,Us2SIperc,Uf2SIperc];
+% Uallperc = [Us1allperc,Uf1allperc,Us2allperc,Uf2allperc];

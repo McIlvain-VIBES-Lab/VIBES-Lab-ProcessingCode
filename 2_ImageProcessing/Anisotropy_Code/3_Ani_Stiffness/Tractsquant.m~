@@ -1,0 +1,209 @@
+%% TRACTS
+% 1 = Anterior Corona Radiata Left
+% 2 = Anterior Corona Radiata Right
+% 3 = Body Corpus Callosum
+% 4 = Corticolspinal Tract Left
+% 5 = Corticolspinal Tract Right
+% 6 = Genu Corpus Callosum
+% 7 = Posterior Corona Radiata Left
+% 8 = Posterior Corona Radiata Right
+% 9 = Superior Corona Radiata Left
+% 10 = Superior Corona Radiata Right
+% 11 = Superior Longitudinal Fasciculus Left
+% 12 = Superior Longitudinal Fasciculus Right
+% 13 = Splenium Corpus Callosum
+
+
+cd Tracts; cd WMminor; load Tracts.mat
+cd niiTracts; niis = dir('*.nii');
+cd ..; cd ..; cd ..                           
+load dtiall.mat
+DTI = abs(dtiall(:,:,:,1))>0;
+% cd Buckley_Tbi_Brain
+cd MRE; cd AP
+load Multiexcite_02_AP_170222.mat
+maskAP = flip(flip(permute(mask,[2 1 3]),1),2);
+cd ..; cd LR
+load Multiexcite_02_LR_170222.mat
+maskLR = flip(flip(permute(mask,[2 1 3]),1),2);
+cd ..; cd .. 
+
+%%  AP
+cd Skeleton
+load FA.mat
+cd ..
+load SlowFastSummation.mat
+cd MRE; cd AP 
+%addpath('PostInv')
+load Mu.mat; load slowfasttwo.mat; load BuckyOut.mat; load Mu_LDI_Diff414.mat
+
+MutotlistAP = zeros(1,13,4); TotalAP = zeros(13,3); AmplistAP = zeros(1,13,2);
+UperctotAP = zeros(1,13,4); ThlistAP = zeros(1,2,13); FAtractlistAP = zeros(1,13);
+
+Vmult1 = flip(flip(permute(Vmult,[2 1 3]),1),2);
+Mux = flip(flip(permute(Mu,[2 1 3]),1),2);
+Mus1 = Mu_s1; Muf1 = Mu_f1; Mus2 = Mu_s2; Muf2 = Mu_f2;
+Theta1 = acos(dot(dtiall,flip(flip(permute(V1x,[2 1 3 4]),1),2),4));
+Theta2 = acos(dot(dtiall,flip(flip(permute(V2x,[2 1 3 4]),1),2),4));
+A1 = flip(flip(permute(A1x,[2 1 3]),1),2); 
+A2 = flip(flip(permute(A2x,[2 1 3]),1),2);
+UsV1 = flip(flip(permute(U_s_V1,[2 1 3]),1),2); 
+UfV1 = flip(flip(permute(U_f_V1,[2 1 3]),1),2);
+UsV2 = flip(flip(permute(U_s_V2,[2 1 3]),1),2); 
+UfV2 = flip(flip(permute(U_f_V2,[2 1 3]),1),2);
+
+
+for ii = 1:length(niis)
+    nii = niis(ii).name;
+    tract = nii(1:end-4);
+    TR = double(Tracts(:,:,:,ii)); 
+    maskx = TR.*DTI.*Vmult1.*maskAP.*maskLR;
+    list = maskx(maskx==1);
+    
+    %% Mu
+    nn = Mus1.*maskx; nn(isnan(nn)) = 0;
+    Mus1x = Mus1.*maskx; Mus2x = Mus2.*maskx;
+    Muf1x = Muf1.*maskx; Muf2x = Muf2.*maskx;
+    Mulist = nn(nn>0);
+    Mus1list = Mus1x(Mus1x>0); Mus2list = Mus2x(Mus2x>0);
+    Muf1list = Muf1x(Muf1x>0); Muf2list = Muf2x(Muf2x>0);
+    % figure;im(nn);caxis([0 5000])
+    MutotlistAP(1:length(Mus1list),ii,1) = Mus1list;
+    MutotlistAP(1:length(Mus2list),ii,2) = Mus2list;
+    MutotlistAP(1:length(Muf1list),ii,3) = Muf1list;
+    MutotlistAP(1:length(Muf2list),ii,4) = Muf2list;
+    Mumean = mean(Mulist);
+    
+    %% Theta
+    Theta1mask = Theta1.*maskx; Theta1list = Theta1(nn>0);
+    Theta2mask = Theta2.*maskx; Theta2list = Theta2(nn>0);
+    
+    ThlistAP(1:length(Theta1list),1,ii) = Theta1list;
+    ThlistAP(1:length(Theta1list),2,ii) = Theta2list;
+    
+    %% Amplitude weightings
+    A1p = A1./(A1+A2); A2p = A2./(A1+A2);
+    A1mask = A1p.*maskx; A1mask(isnan(A1mask)) = 0;
+    A1list = A1mask(nn>0);
+    A2mask = A2p.*maskx; A2mask(isnan(A2mask)) = 0;
+    A2list = A2mask(nn>0);
+    
+    AmplistAP(1:length(A1list),ii,1) = A1list;
+    AmplistAP(1:length(A1list),ii,2) = A2list;
+    
+    %% FA
+    FAmask = FA.*maskx; FAlist = FA(nn>0);
+    FAtractlistAP(1:length(FAlist),ii) = FAlist;
+    
+    %% Slow/Fast
+    UsV1list = abs(UsV1(nn>0)); UsV1list = UsV1list(~isnan(UsV1list));
+    UfV1list = abs(UfV1(nn>0)); UfV1list = UfV1list(~isnan(UfV1list));
+    UsV2list = abs(UsV2(nn>0)); UsV2list = UsV2list(~isnan(UsV2list));
+    UfV2list = abs(UfV2(nn>0)); UfV2list = UfV2list(~isnan(UfV2list));
+    
+    UspercV1 = UsV1list./(UfV1list+UsV1list)*100; UfpercV1 = UfV1list./(UfV1list+UsV1list)*100;
+    UspercV2 = UsV2list./(UfV2list+UsV2list)*100; UfpercV2 = UfV2list./(UfV2list+UsV2list)*100;
+    
+    UperctotAP(1:length(UspercV1),ii,3) = UspercV2; UperctotAP(1:length(UspercV1),ii,4) = UfpercV2;
+    UperctotAP(1:length(UspercV1),ii,1) = UspercV1; UperctotAP(1:length(UspercV1),ii,2) = UfpercV1;
+    
+    Us = flip(flip(permute(U_s>U_f,[2 1 3]),1),2); Uf = flip(flip(permute(U_f>U_s,[2 1 3]),1),2);
+    Usmask = maskx.*Us; Ufmask = maskx.*Uf; masktot = Usmask+Ufmask;
+    Slow = Us(Usmask == 1); Slowperc = length(Slow)/length(maskx(maskx==1))*100;
+    Fast = Uf(Ufmask == 1); Fastperc = length(Fast)/length(maskx(maskx==1))*100;
+    
+    TotalAP(ii,1) = Mumean; TotalAP(ii,2) = Slowperc; TotalAP(ii,3) = Fastperc;
+    
+    disp(sprintf('Mulist: %i; UsV1list: %i; Theta1list: %i; ii: %i',length(Mulist),length(UsV1list),length(Theta1list),ii))
+    
+end
+
+save('Quant_MUFS_APnew414.mat','TotalAP','MutotlistAP','ThlistAP','FAtractlistAP')
+
+%% LR
+cd ..; cd LR
+%addpath('PostInv')
+load slowfasttwo.mat; load BuckyOut.mat; load Mu_LDI_Diff414.mat
+load Mu.mat
+MutotlistLR = zeros(1,13,4); TotalLR = zeros(13,3); AmplistLR = zeros(1,13,2);
+UperctotLR = zeros(1,13,4); ThlistLR = zeros(1,2,13); FAtractlistLR = zeros(1,13);
+
+Vmult1 = flip(flip(permute(Vmult,[2 1 3]),1),2);
+Mux = flip(flip(permute(Mu,[2 1 3]),1),2);
+Mus1 = Mu_s1; Muf1 = Mu_f1; Mus2 = Mu_s2; Muf2 = Mu_f2;
+Theta1 = acos(dot(dtiall,flip(flip(permute(V1x,[2 1 3 4]),1),2),4));
+Theta2 = acos(dot(dtiall,flip(flip(permute(V2x,[2 1 3 4]),1),2),4));
+A1 = flip(flip(permute(A1x,[2 1 3]),1),2); 
+A2 = flip(flip(permute(A2x,[2 1 3]),1),2);
+UsV1 = flip(flip(permute(U_s_V1,[2 1 3]),1),2); 
+UfV1 = flip(flip(permute(U_f_V1,[2 1 3]),1),2);
+UsV2 = flip(flip(permute(U_s_V2,[2 1 3]),1),2); 
+UfV2 = flip(flip(permute(U_f_V2,[2 1 3]),1),2);
+
+for ii = 1:length(niis)
+    nii = niis(ii).name;
+    tract = nii(1:end-4);
+    TR = double(Tracts(:,:,:,ii));
+    maskx = TR.*DTI.*Vmult1.*maskAP.*maskLR;
+    list = maskx(maskx==1);
+    
+    %% Mu
+    nn = Mus1.*maskx; nn(isnan(nn)) = 0;
+    Mus1x = Mus1.*maskx; Mus2x = Mus2.*maskx;
+    Muf1x = Muf1.*maskx; Muf2x = Muf2.*maskx;
+    Mulist = nn(nn>0);
+    Mus1list = Mus1x(Mus1x>0); Mus2list = Mus2x(Mus2x>0);
+    Muf1list = Muf1x(Muf1x>0); Muf2list = Muf2x(Muf2x>0);
+    % figure;im(nn);caxis([0 5000])
+    MutotlistLR(1:length(Mus1list),ii,1) = Mus1list;
+    MutotlistLR(1:length(Mus2list),ii,2) = Mus2list;
+    MutotlistLR(1:length(Muf1list),ii,3) = Muf1list;
+    MutotlistLR(1:length(Muf2list),ii,4) = Muf2list;
+    Mumean = mean(Mulist);
+    
+    %% Theta
+    Theta1mask = Theta1.*maskx; Theta1list = Theta1(nn>0);
+    Theta2mask = Theta2.*maskx; Theta2list = Theta2(nn>0);
+    
+    ThlistLR(1:length(Theta1list),1,ii) = Theta1list;
+    ThlistLR(1:length(Theta1list),2,ii) = Theta2list;
+    
+    %% Amplitude weightings
+    A1p = A1./(A1+A2); A2p = A2./(A1+A2);
+    A1mask = A1p.*maskx; A1mask(isnan(A1mask)) = 0;
+    A1list = A1mask(nn>0);
+    A2mask = A2p.*maskx; A2mask(isnan(A2mask)) = 0;
+    A2list = A2mask(nn>0);
+    
+    AmplistLR(1:length(A1list),ii,1) = A1list;
+    AmplistLR(1:length(A1list),ii,2) = A2list;
+    
+    %% FA
+    FAmask = FA.*maskx; FAlist = FA(nn>0);
+    FAtractlistLR(1:length(FAlist),ii) = FAlist;
+    
+    %% Slow/Fast
+    UsV1list = abs(UsV1(nn>0)); UsV1list = UsV1list(~isnan(UsV1list));
+    UfV1list = abs(UfV1(nn>0)); UfV1list = UfV1list(~isnan(UfV1list));
+    UsV2list = abs(UsV2(nn>0)); UsV2list = UsV2list(~isnan(UsV2list));
+    UfV2list = abs(UfV2(nn>0)); UfV2list = UfV2list(~isnan(UfV2list));
+    
+    UspercV1 = UsV1list./(UfV1list+UsV1list)*100; UfpercV1 = UfV1list./(UfV1list+UsV1list)*100;
+    UspercV2 = UsV2list./(UfV2list+UsV2list)*100; UfpercV2 = UfV2list./(UfV2list+UsV2list)*100;
+    
+    UperctotLR(1:length(UspercV1),ii,3) = UspercV2; UperctotLR(1:length(UspercV1),ii,4) = UfpercV2;
+    UperctotLR(1:length(UspercV1),ii,1) = UspercV1; UperctotLR(1:length(UspercV1),ii,2) = UfpercV1;
+    
+    Us = flip(flip(permute(U_s>U_f,[2 1 3]),1),2); Uf = flip(flip(permute(U_f>U_s,[2 1 3]),1),2);
+    Usmask = maskx.*Us; Ufmask = maskx.*Uf; masktot = Usmask+Ufmask;
+    Slow = Us(Usmask == 1); Slowperc = length(Slow)/length(maskx(maskx==1))*100;
+    Fast = Uf(Ufmask == 1); Fastperc = length(Fast)/length(maskx(maskx==1))*100;
+    
+    TotalLR(ii,1) = Mumean; TotalLR(ii,2) = Slowperc; TotalLR(ii,3) = Fastperc;
+    
+    disp(sprintf('Mulist: %i; UsV1list: %i; Theta1list: %i; ii: %i',length(Mulist),length(UsV1list),length(Theta1list),ii))
+    
+end
+
+save('Quant_MUFS_LRnew414.mat','TotalLR','UperctotLR','MutotlistLR','ThlistLR','FAtractlistLR','AmplistLR')
+

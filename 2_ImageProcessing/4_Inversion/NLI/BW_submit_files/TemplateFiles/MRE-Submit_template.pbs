@@ -1,0 +1,25 @@
+#!/bin/bash
+# Name of Run
+#PBS -N DIR
+# request the queue
+#PBS -q normal
+# node usage
+#PBS -l nodes=17:ppn=16:xe
+# request wall time
+#PBS -l walltime=08:00:00
+#combine PBS stadard output and error files
+#PBS -j oe
+# mail is sent to you when the job starts and when it terminates or aborts
+#PBS -m bea
+# specify your email address
+#PBS -M cjohns73@gmail.com
+# HPC-based high-res quantitative MRI = ILL_bamh (bamh)
+#PBS -A bamh
+
+cd ~/bin
+
+MREexe=MRE-Zone.bw
+
+MRErunfile=RUNFILE
+
+aprun -n 272 ./$MREexe $MRErunfile

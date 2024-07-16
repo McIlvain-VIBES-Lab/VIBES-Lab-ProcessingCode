@@ -1,0 +1,77 @@
+%path='/Volumes/MRELAB2/EPILEPSY/';
+path='/Volumes/fsergi-001/Student folders/AJ/Epilepsy/';
+
+addpath('/Volumes/fsergi-001/Student folders/AJ/Matlab/DTI_Code/Epilepsy')
+addpath('/Volumes/fsergi-001/Student folders/AJ/Matlab/DTI_Code/nifti/')
+
+cd(path)
+folders=dir('/Volumes/MRELAB2/EPILEPSY/1*');
+for i=1:size(folders,1)
+    cd([path, folders(i).name, '/DTI_recon/']);
+    %creates dti_mask, dti_FA, MD, MO, SO, L1, L2, L3, V1, V2, & V3 images
+    fprintf('processing %s\n', folders(i).name);
+    dti_proc()
+    copyfile('dti_FA.nii', [path, '/FA_Files_T_S/', folders(i).name, '_dti_FA.nii']);
+end
+
+%% TBSS
+cd([path, '/FA_Files_T_S/']);
+
+%Runs TBSS Preprocessing step. Pipes output of processing to text file
+%called tbss_output.txt
+!echo Running tbss_1_preproc: | tee -a tbss_output.txt
+!$FSLDIR/bin/tbss_1_preproc *dti_FA.nii | tee -a tbss_output.txt
+
+%Runs TBSS Registration step. Registers each image to the standard FMRIB58_FA image
+%(as recommeneded by fsl) Appends output to tbss_output.txt file
+!echo Running tbss_2_reg: | tee -a tbss_output.txt
+!$FSLDIR/bin/tbss_2_reg -T | tee -a tbss_output.txt
+
+%Runs TBSS Post Registration step. Transforms each image to the standard MNI space
+%Results in a standard space version of each subjects FA image. Merges all subjects
+%into a single 4D image file called all_FA in the subdirectory "stats".
+%creates a mean of all FA images called mean_FA, and skeletonises it to create mean_FA_skeleton
+%All stdoutput is appends to tbss_output.txt file
+!echo Running tbss_3_postreg: | tee -a tbss_output.txt
+!$FSLDIR/bin/tbss_3_postreg -S | tee -a tbss_output.txt
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%check your results to see what thresholding is appropriate. Here the
+%threshold is .3 (due to small number of subjects. Typically .2)
+!$FSLDIR/bin/fslview ./stats/all_FA ./stats/mean_FA_skeleton -l Green -b .3,.6 &
+
+%Runs TBSS Post Prestats step. Extracts a thresholded (.3) skeleton mask
+%from the mean FA. Statistics will be run on voxels within this mask
+!echo Running tbss_4_prestats: | tee -a tbss_output.txt
+!$FSLDIR/bin/tbss_4_prestats 0.3 | tee -a tbss_output.txt
+
+%% GLM Model
+%Contrast Epilepsy vs Control
+%path='/Users/superhuro/Desktop/';
+cd([path, '/FA_Files_T_S/stats/']);
+
+%Generate Design Matrix 
+%subject order: 103 104 108 109 110 111 112 113 114 116 117 119 121
+%Control subjects: 110 111 112 113 116 119
+%Epilepsy subjects: 103 104 108 109 114 117 121
+design_mat=[1 1 1 1 0 0 0 0 1 0 1 0 1;58 58 39 32 26 54 39 60 21 36 41 26 27]';
+fid=fopen('design_matrix.txt','w');
+fprintf(fid, '%d %d\n', design_mat);
+fclose(fid);
+!$FSLDIR/bin/Text2Vest design_matrix.txt design.mat
+
+%Generate Contrast Matrix
+design_con=[1 0];
+cid=fopen('design_contrast.txt','w');
+fprintf(cid, '%d %d\n', design_con);
+fclose(cid);
+!$FSLDIR/bin/Text2Vest design_contrast.txt design.con
+
+%Run GLM Contrast usings randomise
+%to use randomise on tbss preprocessed data have to include --T2 flag
+!$FSLDIR/bin/randomise -i all_FA_skeletonised -o tbss -m mean_FA_skeleton_mask -d design.mat -t design.con --T2
+
+%Extract significant voxels
+!$FSLDIR/bin/fslmaths tbss_tfce_corrp_tstat1 -thr 0.95 -bin -mul tbss_tstat1 tbss_thresh_tstat1
+
+!$FSLDIR/bin/fslview tbss_thresh_tstat1 tbss_tfce_corrp_tstat1 tbss_tstat1 &

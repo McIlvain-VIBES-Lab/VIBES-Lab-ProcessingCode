@@ -1,0 +1,122 @@
+function [Mat_full,peaks_mat,peak_data_mat] = spheregrid_testing2(Bifo_all,Brfo_all,mask)
+tic
+% U3abs = abs(U3); EnerU3 = sqrt(U3abs(:,:,:,1).^2+U3abs(:,:,:,2).^2+U3abs(:,:,:,3).^2);
+N1 = 50;
+N2 = 25;
+Phi_sect = pi()/N2; Theta_sect = 2*pi()/N1;
+R = ones(N1*N2,1);
+Theta_numbers = ones(1,N1);
+Phi_numbers = -N2/2;
+for ii = 2:N1-1
+    Theta_numbers = cat(2,Theta_numbers,repmat(ii,1,N2));
+end
+for jj = Phi_numbers+1:(N2/2-1)
+    Phi_numbers = cat(2,Phi_numbers,jj);
+end
+size(Phi_numbers);
+Phi_numbers = repmat(Phi_numbers,1,N1);
+Phi = permute(Phi_sect*Phi_numbers,[2 1]);
+Theta = permute(Theta_sect*Theta_numbers,[2 1]);
+Phi1 = Phi+pi()/2+pi()/N2;
+radmat = [Theta Phi1]; sphmat = [Theta Phi1 R];
+[X,Y,Z] = sph2cart(Theta,Phi,R);
+cartmat = [X Y Z];
+
+
+toc
+[Ux,Uy,Uz,T0,P0,U3filt] = buckyanalyzer_CLJfilter(Bifo_all,Brfo_all,mask,cartmat);
+% pointsize = 500;
+U3abs = abs(U3filt); EnerU3 = sqrt(U3abs(:,:,:,1).^2+U3abs(:,:,:,2).^2+U3abs(:,:,:,3).^2);
+
+% Multx = squeeze(Ux(47,ii,28,:));
+% Multy = squeeze(Uy(47,ii,28,:));
+% Multz = squeeze(Uz(47,ii,28,:));
+% Mult_tot = cat(2,abs(Multx),abs(Multy),abs(Multz));
+% Mult = mean(Mult_tot,2);
+% Rnew = Mult.*R;
+% Sphmat = cat(2,radmat,Rnew);
+% 
+% figure;scatter(Sphmat(:,1),Sphmat(:,2),pointsize,Sphmat(:,3),'filled','square');caxis([0 1])
+% figure;PlotSphereIntensity(rad2deg(abs(Sphmat(:,1))),rad2deg(abs(Sphmat(:,2))),rad2deg(abs(Sphmat(:,3))))
+% 
+% matrix = flip(reshape(Rnew,[50 50]),1);
+% Matrix = matrix.*(matrix>.35);
+% 
+% [BW2] = centcluster(Matrix);
+% [peaks_loc,num_peaks] = peakfinder(Sphmat,BW2);
+maxpeaks = 2;
+peaks_mat = zeros(80,80,48,maxpeaks); 
+peaks_loc_mat = zeros(80,80,48,maxpeaks,2);
+peak_data_mat = zeros(80,80,48,maxpeaks,3);
+peak_number = zeros(80,80,48);
+Matrx = zeros(80,80,48,N2,N1);
+Mat_full = zeros(size(Matrx));
+% Mult_norm = zeros(size(Ux));
+n = 0;
+tic
+for i1 = 1:80
+    for j1 = 1:80
+        for k1 = 24
+            if mask(i1,j1,k1) == 1
+                n = n+1;
+                if rem(n,100) == 0
+                    n
+                    toc
+                end
+                %[i1 j1 k1]
+                Multx = squeeze(Ux(i1,j1,k1,:));
+                Multy = squeeze(Uy(i1,j1,k1,:));
+                Multz = squeeze(Uz(i1,j1,k1,:));
+                Mult_tot = cat(2,abs(Multx),abs(Multy),abs(Multz));
+                Mult = sqrt(sum(Mult_tot.^2,2)); % EnerU3_2500
+                Mult_norm = Mult/EnerU3(i1,j1,k1);
+%                 Mult_norm(i1,j1,k1,:) = reshape(Mult/EnerU3(i1,j1,k1),[1 1 1 length(Mult)]);
+                %toc
+                %Rnew = Mult.*R;
+                Rnew = Mult_norm.*R;
+                % Sphmat = cat(2,radmat,Rnew);
+                matrix = flip(reshape(Rnew,[N2 N1]),1);
+                Mat_full(i1,j1,k1,:,:) = matrix;
+                % Matrix = matrix.*(matrix>(max(max(max(matrix)))*.9));
+                %Matrix = matrix.*(matrix>0.0625);
+                %[BW2] = centcluster(Matrix);
+                %Matrx(i1,j1,k1,:,:) = Matrix;
+                % [peaks_loc,num_peaks] = peakfinder(Sphmat,BW2);
+                [peak_data] = peakfinder4(matrix,N1,N2,maxpeaks);
+                peaks = peak_data(:,3);
+                peaks_loc = peak_data(:,1:2); 
+                if length(peaks) > 2
+                    peaks(3:end) = [];
+                    peaks_loc(3:end,:) = [];
+                    peak_data(3:end,:) = [];
+                end
+                num_peaks = length(peaks);
+%                 for peak = 1:num_peaks
+%                     peaks(i1,j1,k1,peak,:) = peaks_loc(peak,:);
+%                 end
+                peaks_loc_mat(i1,j1,k1,:,:) = peaks_loc;
+                peak_number(i1,j1,k1) = num_peaks;
+                peak_data_mat(i1,j1,k1,:,:) = peak_data;
+                peaks_mat(i1,j1,k1,:) = peaks;
+                %toc
+            end
+        end
+    end
+end
+toc
+
+%save('Matparts','Ux','Uy','Uz','U3filt','-v7.3')
+%save('Peaks_Output_twinpeaks_2550.mat','peaks_mat','peak_number','peak_data_mat','Mat_full','-v7.3')
+
+
+% tic
+% save('Sphereoutput.mat','Sphmat','Mult','Rnew')
+% toc
+% 
+% cd .. 
+% cd ..
+% load('dtiall.mat')
+% cd Tracts
+% tract = load_nii('tractsCR.nii'); TractCR = tract.img>0; dti = (1-(dtiall(:,:,:,3)==0));
+% CR = TractCR.*dti;
+% figure;im(CR)
