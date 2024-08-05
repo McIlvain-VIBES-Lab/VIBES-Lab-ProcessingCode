@@ -18,6 +18,7 @@ addpath(sprintf('%s/General_Code/recon_3Dspiral/irt',pwd))
 setup_fessler_IRT(sprintf('%s/General_Code/recon_3Dspiral/irt',pwd))
 
 addpath(genpath(sprintf('%s/General_Code/nifti',pwd)))
+addpath(genpath(sprintf('%s/General_Code/oss_snr',pwd)))
 cd General_Code
 load('mre_colormaps.mat');
 
