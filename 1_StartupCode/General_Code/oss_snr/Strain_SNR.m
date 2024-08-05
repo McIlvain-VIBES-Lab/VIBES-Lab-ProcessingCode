@@ -377,9 +377,9 @@ end
 
 runtme=tic; %start timer
 
-if isempty(gcp('nocreate'))
-    parpool
-end
+% if isempty(gcp('nocreate'))
+%     parpool
+% end
 
 % OSS of motions
 [oss,ons]=OSS_calc(Ur,Ui,mask,res,filtsiz,filtwidth,ord,Nfit,Parr);

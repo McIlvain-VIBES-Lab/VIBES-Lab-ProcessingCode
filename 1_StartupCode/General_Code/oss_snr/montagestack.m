@@ -55,6 +55,7 @@ if(~strcmp(newfig,'n'))
 end
 
 if(nargin==1||isempty(monsiz))
+    
     montage(reshape(stack,[dim(1) dim(2) 1 dim(3)]),'displayrange',[])    
 elseif(nargin>1)
     montage(reshape(stack,[dim(1) dim(2) 1 dim(3)]),'displayrange',[],'Size',monsiz)
