@@ -392,15 +392,15 @@ runtme=tic; %start timer
 % Check isotropic voxels
 h=mean(res);
 dh=range(res);
-if(dh/h)>0.05
-    disp(['XXX Warning: voxel anistropy > 5%, dh/mean(h) = ' dh/h])
-    cont=input('XXX Continue using average voxel dimension for noise estimate <y(default)/n>??','s');
-    if(~isempty(cont))
-        if(strcmp(cont,'n'))
-            error('SNR calcualtion aborted because of anisotropic voxels')
-        end
-    end
-end
+% if(dh/h)>0.05 %% GM commented this out on 3/26/25
+%     disp(['XXX Warning: voxel anistropy > 5%, dh/mean(h) = ' dh/h])
+%     cont=input('XXX Continue using average voxel dimension for noise estimate <y(default)/n>??','s');
+%     if(~isempty(cont))
+%         if(strcmp(cont,'n'))
+%             error('SNR calcualtion aborted because of anisotropic voxels')
+%         end
+%     end
+% end
 % Use Gaussian integration to calcualte the average value of OSS noise.
 a=0;
 b=pi;

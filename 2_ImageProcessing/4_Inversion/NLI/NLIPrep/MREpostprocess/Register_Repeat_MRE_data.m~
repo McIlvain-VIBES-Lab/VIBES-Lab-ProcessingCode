@@ -1,0 +1,67 @@
+
+for ii=1:10
+    load(['Rep' sprintf('%2.2i',ii) 'MRE_AP_2set_voxelmesh_G3300.v9p37NITI_isodamp_SPoffavlast08..0100.ReconProps.mat']);
+    t2nii = make_nii(flipdim(flipdim(permute(MagIm,[2 1 3]),1),2),[voxsize_mm(2) voxsize_mm(1) voxsize_mm(3)]);
+    save_nii(t2nii,['t2stack' sprintf('%2.2i',ii) '.nii'])
+    rmunii = make_nii(flipdim(flipdim(permute(Realmu,[2 1 3]),1),2),[voxsize_mm(2) voxsize_mm(1) voxsize_mm(3)]);
+    save_nii(rmunii,['Realmu' sprintf('%2.2i',ii) '.nii'])
+    imunii = make_nii(flipdim(flipdim(permute(Imagmu,[2 1 3]),1),2),[voxsize_mm(2) voxsize_mm(1) voxsize_mm(3)]);
+    save_nii(imunii,['Imagmu' sprintf('%2.2i',ii) '.nii'])
+    phinii = make_nii(flipdim(flipdim(permute(Realphi,[2 1 3]),1),2),[voxsize_mm(2) voxsize_mm(1) voxsize_mm(3)]);
+    save_nii(phinii,['Realphi' sprintf('%2.2i',ii) '.nii'])
+    zetanii = make_nii(flipdim(flipdim(permute(Realzeta,[2 1 3]),1),2),[voxsize_mm(2) voxsize_mm(1) voxsize_mm(3)]);
+    save_nii(zetanii,['Realzeta' sprintf('%2.2i',ii) '.nii'])
+    DRnii = make_nii(flipdim(flipdim(permute(DR,[2 1 3]),1),2),[voxsize_mm(2) voxsize_mm(1) voxsize_mm(3)]);
+    save_nii(DRnii,['DR' sprintf('%2.2i',ii) '.nii'])
+
+    MagImAll(:,:,:,ii)=MagIm;
+    RealmuAll(:,:,:,ii)=Realmu;
+    ImagmuAll(:,:,:,ii)=Imagmu;
+    RealphiAll(:,:,:,ii)=Realphi;
+    RealzetaAll(:,:,:,ii)=Realzeta;
+    DRAll(:,:,:,ii)=DR;
+end
+
+% Example from Udel
+% !$FSLDIR/bin/flirt -in t2stack-scanxx.nii -ref t2stack-scan1.nii -out scanxx_to_ref.nii -omat scanxx_to_ref.mat -dof 6
+% !$FSLDIR/bin/flirt -in Mu_scanxx.nii -ref  t2stack-scan1.nii -out Mu_Reg.nii -init scanxx_to_ref.mat -applyxfm;
+
+
+% one at a time
+%!$FSLDIR/bin/flirt -in t2stack02.nii -ref t2stack01.nii -out scan02_to_ref.nii -omat scan02_to_ref.mat -dof 6
+%!$FSLDIR/bin/flirt -in Realmu02.nii -ref  t2stack01.nii -out Realmu_Reg02.nii -init scan02_to_ref.mat -applyxfm;
+
+% Put in a loop
+s=size(Realmu);
+
+Realmureg=zeros([s 10]);
+Imagmureg=zeros([s 10]);
+Realphireg=zeros([s 10]);
+Realzetareg=zeros([s 10]);
+DRreg=zeros([s 10]);
+MagImreg=zeros([s 10]);
+
+Realmureg(:,:,:,1)=RealmuAll(:,:,:,1);
+Imagmureg(:,:,:,1)=ImagmuAll(:,:,:,1);
+Realphireg(:,:,:,1)=RealphiAll(:,:,:,1);
+Realzetareg(:,:,:,1)=RealzetaAll(:,:,:,1);
+DRreg(:,:,:,1)=DRAll(:,:,:,1);
+MagImreg(:,:,:,1)=MagImAll(:,:,:,1);
+
+
+for ii=2:2
+    str=['!$FSLDIR/bin/flirt -in t2stack' int2str(ii) '.nii -ref t2stack01.nii -out scan' int2str(ii) '_to_ref.nii -omat scan' int2str(ii) '_to_ref.mat -dof 6'];
+    eval(str1);
+    str2=['!$FSLDIR/bin/flirt -in Realmu' int2str(ii) '.nii -ref  t2stack01.nii -out Realmu_Reg' int2str(ii) '.nii -init scan' int2str(ii) '_to_ref.mat -applyxfm'];
+    eval(str2);
+end
+
+!gunzip -f scan02_to_ref.nii.gz
+tmp = load_nii('scan02_to_ref.nii');
+MagImreg_02 = double(permute(flipdim(flipdim(tmp.img,1),2),[2 1 3]));
+
+
+
+montagestack(MagImAll(:,:,:,1));title('MagIm Rep1');pause(0.1);drawnow;pause(0.1);drawnow;
+montagestack(MagImAll(:,:,:,2));title('MagIm Rep2');pause(0.1);drawnow;pause(0.1);drawnow;
+montagestack(MagImreg_02);title('MagIm Rep2 reg');pause(0.1);drawnow;pause(0.1);drawnow;

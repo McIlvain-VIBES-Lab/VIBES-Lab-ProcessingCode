@@ -15,9 +15,9 @@ for ii=1:length(dirlist)
     mkdir('niis')
     tmp1.img = flip(flip(permute(t2stack,[2 1 3]),1),2);
     save_nii(tmp1,'niis/mag.nii')
-    tmp2.img = flip(flip(permute(DR,[2 1 3]),1),2);
+    tmp2.img = flip(flip(permute(Mu,[2 1 3]),1),2);
     save_nii(tmp2,'niis/Stiffness.nii')
-    tmp3.img = flip(flip(permute(Mu,[2 1 3]),1),2);
+    tmp3.img = flip(flip(permute(DR,[2 1 3]),1),2);
     save_nii(tmp3,'niis/DampingRatio.nii')
     cd ..
 

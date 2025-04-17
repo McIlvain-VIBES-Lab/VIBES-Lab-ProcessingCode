@@ -3,9 +3,10 @@
 clear all
 cd('Ax_BRAIN_MRE')
 dirlist2 = dir('IM*');
+
 nn = 0;
 for bb =1:4
-for aa = 1:540
+for aa = 1:(length(dirlist2)/4)
 %    for dd = 1:45
         nn=nn+1;
         images1(:,:,aa,bb) = dicomread(dirlist2(nn).name);
@@ -14,7 +15,7 @@ end
 
 tt = 1;
 rr = 1;
-for jj=1:45
+for jj=1:(length(dirlist2)/48)
 for ii=1:4
 
 e1_r(:,:,rr,ii) = images1(:,:,tt,ii);
@@ -76,7 +77,7 @@ t2stack = mean(mean(magimg,5),4);
 t2nii = make_nii(t2stack,[dy dx dz]);
 save_nii(t2nii,'t2stack.nii')
 
-!$FSLDIR/bin/bet2 t2stack.nii t2bet.nii -m -v -f 0.25 -w 1.1
+!$FSLDIR/bin/bet2 t2stack.nii t2bet.nii -m -v -f 0.5 -w 1.1
 !gunzip -f t2bet.nii_mask.nii.gz
 !gunzip -f t2bet.nii.gz
 !cp t2bet.nii_mask.nii t2mask.nii
@@ -99,7 +100,7 @@ save maskx.mat maskx
 
 load('t2mask_bet.mat')
 load('t2stack.mat')
-tmp = (t2stack.*mask)./(6000);
+tmp = (t2stack.*mask)./(15000);
 
 maskx = zeros(size(mask));
 
@@ -110,7 +111,7 @@ figure;im(tmp);caxis([0 1])
 
 
 
-for ss = 45:-1:1
+for ss = 15:-1:1
     ss
     maskx(:,:,ss) = double(roipoly(tmp(:,:,ss)));
 end

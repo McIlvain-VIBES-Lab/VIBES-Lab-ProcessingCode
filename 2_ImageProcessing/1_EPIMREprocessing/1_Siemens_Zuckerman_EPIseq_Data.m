@@ -50,7 +50,7 @@ dz = mag_nii.hdr.dime.pixdim(4);
 dirs = 3; %number of directions (y, x, z) 
 posneg = 2; %positive or negative polarity 
 offset = 4; %phase offsets 
-freq = 60;  
+freq = 50;  
 
 mag = double(mag);
 phs = pi*((double(phs)-2048)/2048); 
@@ -95,12 +95,14 @@ figure;im(tmp);caxis([0 1])
 figure;im(tmp.*mask.*abs(1-maskx));caxis([0 1])
 
 
-for ss = 14:-1:1
+for ss = 22:-1:19
     ss
     maskx(:,:,ss) = double(roipoly(tmp(:,:,ss)));
 end
 save maskx.mat maskx 
-
+%% Phantoms 
+maskx = zeros(size(mask));
+save maskx.mat maskx 
 %% Process Part 2 
 clear image
 
@@ -110,12 +112,15 @@ load maskx.mat
 mask = mask.*abs(1-maskx);
 
 save t2mask_final.mat mask
-
+%%
 mkdir mre_process
 cd mre_process
+%% 
+load t2mask_final.mat
 
 image(:,:,:,:,1) = squeeze(imgraw(:,:,:,1,3,:)./imgraw(:,:,:,2,3,:)); % Z
 image(:,:,:,:,2) = (-1)*squeeze(imgraw(:,:,:,1,1,:)./imgraw(:,:,:,2,1,:)); % Y
+%image(:,:,:,:,2) = (1)*squeeze(imgraw(:,:,:,1,1,:)./imgraw(:,:,:,2,1,:)); % Y
 image(:,:,:,:,3) = squeeze(imgraw(:,:,:,1,2,:)./imgraw(:,:,:,2,2,:)); % X
 image = permute(image,[1 2 3 5 4]);
 
@@ -175,7 +180,6 @@ save(sprintf('%s.mat',mreParams.subj),'mreParams','mask','Zmotion','Ymotion','Xm
 cd ..
 
 save t2mask.mat mask
-save(sprintf('%s.mat',mreParams.subj),'mreParams','mask','Zmotion','Ymotion','Xmotion','t2stack','OSS_SNR')
 
 %% Clean Up data (Section 4)
 mkdir('File_Storage')
@@ -188,3 +192,9 @@ mkdir('File_Storage')
 !mv mreimages_unwrap.mat File_Storage/
 !mv t2mask_bet.mat File_Storage/
 %% 
+figure; im(real(Xmotion)); colormap(wave_color);
+saveas (gcf,'BABA_6p_X.png')
+figure; im(real(Ymotion)); colormap(wave_color);
+saveas (gcf,'BABA_6p_Y.png')
+figure; im(real(Zmotion)); colormap(wave_color);
+saveas (gcf,'BABA_6p_Z.png')

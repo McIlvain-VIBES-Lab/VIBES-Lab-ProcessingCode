@@ -1,16 +1,25 @@
 %% VIBES Lab Main Processing Code
 
-clear all
+%Comment this in if you have a T1 Anatomical:
+   cd('T1W_3D_TFE')
+   !/Applications/MRIcron/dcm2niix * -4fn
+   !gunzip -f *.nii.gz
+   !mv co*.nii coT1W_3D_TFE.nii
+   !cp coT1W_3D_TFE.nii ../coT1W_3D_TFE.nii
+   cd ..
 
-slices=648 % Look at number of diacoms in Ax_Brain_MRE folder, and divide by 4
+ !/Applications/MRIcron/dcm2niix *
+    !mv *.nii coT1W_3D_TFE.nii
+    !rm *.json
+    !cp coT1W_3D_TFE.nii ../coT1W_3D_TFE.nii
+   
+clear all
 %%
 cd('Ax_BRAIN_MRE')
 dirlist2 = dir('IM*');
 nn = 0;
 for bb =1:4
-% Might need to change for number of slices, take number of diacoms and
-% divide by 4
-for aa = 1:648 %% number of slices
+for aa = 1:(length(dirlist2)/4) %% number of slices
 %    for dd = 1:45
         nn=nn+1;
         images1(:,:,aa,bb) = dicomread(dirlist2(nn).name);
@@ -19,7 +28,7 @@ end
 
 tt = 1;
 rr = 1;
-for jj=1:45
+for jj=1:(length(dirlist2)/48)
 for ii=1:4
 
 e1_r(:,:,rr,ii) = images1(:,:,tt,ii);
@@ -62,8 +71,6 @@ e6 = flip(flip(permute(e6_t,[2 1 3 4]),2),1);
 
 cd ..
 
-%%
-
 dx = 1.8750;
 dy = 1.8750;
 dz = 2.500; 
@@ -76,6 +83,7 @@ phsimg(:,:,:,2,:)=angle(e3./e4);
 magimg(:,:,:,2,:)=((abs(e3)+abs(e4))/max(col(abs(e3)+abs(e4))))*30000;
 phsimg(:,:,:,1,:)=angle(e5./e6);
 magimg(:,:,:,1,:)=((abs(e5)+abs(e6))/max(col(abs(e5)+abs(e6))))*30000;
+
 
 t2stack = mean(mean(magimg,5),4);
 t2nii = make_nii(t2stack,[dy dx dz]);
@@ -116,14 +124,11 @@ figure;im(tmp);caxis([0 1])
 figure;im(tmp.*mask.*abs(1-maskx));caxis([0 1])
 
 
-for ss = 22:-1:1
+for ss = 2:-1:1
     ss
     maskx(:,:,ss) = double(roipoly(tmp(:,:,ss)));
 end
 save maskx.mat maskx 
-
-
-
 
 %% Section 3
 
@@ -187,16 +192,14 @@ mreParams.freq = freq;
 save(sprintf('%s.mat',mreParams.subj),'mreParams','mask','Zmotion','Ymotion','Xmotion','t2stack', 'OSS_SNR')
 
 
-% mkdir(sprintf('%s_Caviness',date))
-% cd(sprintf('%s_Caviness',date))
-% save(sprintf('%s.mat',mreParams.subj),'mreParams','mask','Zmotion','Ymotion','Xmotion','t2stack','OSS_SNR')
-% cd ..
+mkdir(sprintf('%s_Caviness',date))
+cd(sprintf('%s_Caviness',date))
+save(sprintf('%s.mat',mreParams.subj),'mreParams','mask','Zmotion','Ymotion','Xmotion','t2stack','OSS_SNR')
+cd ..
 
-%% Clean Up data (Section 4)
+% Clean Up data
 mkdir('File_Storage')
-!mv FE_Phs_and_Mag/ File_Storage
-!mv PE_Phs_and_Mag/ File_Storage
-!mv SS_Phs_and_Mag/ File_Storage
+!mv Ax_Brain_MRE/ File_Storage
 !mv study/ File_Storage
 !mv T1W_3D_TFE/ File_Storage/
 !mv dcfiles/ File_Storage/
@@ -209,12 +212,11 @@ mkdir('File_Storage')
 
 !mv mreimages_unwrap.mat File_Storage/
 !mv t2mask_bet.mat File_Storage/
-
-
-%% Copy To NLI Folder
-
+% 
+% 
+% Copy To NLI Folder
 [~, SubjectName] = system('basename "$PWD"');
 SubjectName = strtrim(SubjectName); 
 
 save(sprintf('%s.mat',SubjectName),'mreParams','mask','Zmotion','Ymotion','Xmotion','t2stack','OSS_SNR')
-eval(system('!mv %s.mat /Volumes/McIlvainDrive2/Send_to_NLI',SubjectName))
+eval(sprintf('!mv %s.mat /Volumes/McIlvainDrive2/Send_to_NLI',SubjectName))

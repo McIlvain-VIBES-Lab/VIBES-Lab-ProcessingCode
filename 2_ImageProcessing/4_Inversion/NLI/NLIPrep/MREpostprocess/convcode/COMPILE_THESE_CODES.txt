@@ -1,0 +1,9 @@
+In the command window, use something like
+
+gfortran MREpostprocessv9.f90 -o MREpostprocessv9.x
+
+if you dont have the gfortran compiler, try g95 or ifort or ask your computing peeps.
+
+You will also need to update the paths to this file in output_submitfile_v9p37_Caviness.m (line 119), and MRE_v9_process_folder.m (line 60)
+
+MREpostprocessv9MF.f90 is from Eli, it works for multifrequency runs but not single frequency so dont use it. 

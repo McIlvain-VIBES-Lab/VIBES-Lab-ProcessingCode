@@ -1,0 +1,50 @@
+%% NLI Post Processing
+
+%   Use this script to clean up data after you pull it back down from NLI
+%   You must be in the folder Date-Caviness to run this
+
+dir1=dir('NLI*'); %you will have to change the name here to the first part of the folder name you created
+addpath(pwd)
+
+for ii =1:2:length(dir1)
+    cd(dir1(ii).name);
+    cd hex;
+    dir2=dir('*voxelmesh');
+    cd(dir2.name);
+    cd inv
+    dir2 = dir('*avlast08..0100.Re*');
+
+    for jj =1
+        load(dir2(jj).name);
+        cd ..
+        cd ..
+        cd ..
+        Rx = double(abs(RealShear-3300)<0.0001);
+        Rxm = abs(1-Rx);
+        RealShear = RealShear.*Rxm;
+        ImagShear = ImagShear.*Rxm;
+        DR = DR.*Rxm;
+        save RealShear.mat RealShear
+        save ImagShear.mat ImagShear
+        save DR.mat DR
+
+        ComplexShear = RealShear + (i*ImagShear);
+        AbsShear = sqrt(((RealShear.^2)+(ImagShear.^2)));
+        Mu = 2*(AbsShear.^2)./(RealShear+AbsShear);
+        save ComplexShear.mat ComplexShear
+        save AbsShear.mat AbsShear
+        save Mu.mat Mu
+
+        mkdir('nli_outputs')
+        save nli_outputs/Mu.mat
+        save nli_outputs/DR.mat
+        save nli_outputs/Mask.mat    
+       
+        figure;im(Mu(:,:,:)); caxis([1000 5000]); colorbar; colormap(gca,stiff_color);
+        print('-dpng','-r300',sprintf('Mu_%s',dir1(ii).name(1:end)))
+        print('-dpng','-r300',sprintf('nli_outputs/Mu_%s',dir1(ii).name(1:end)))
+
+
+    cd ..
+    end
+end
