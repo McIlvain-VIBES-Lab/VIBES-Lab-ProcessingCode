@@ -7,7 +7,7 @@ dir1=dir('*.mat'); %you will have to change the name here to the first part of t
 addpath(pwd)
 
 for ii =1:length(dir1)
-    cd(dir1(ii).name(1:end-4));
+    %cd(dir1(ii).name(1:end-4));
     cd hex;
     dir2=dir('*voxelmesh');
     cd(dir2.name);
@@ -52,7 +52,7 @@ end
 
 % Copy Lipton Data back to directory
 
-dirlist = dir('2023-U7487*.mat')
+dirlist = dir('2023-U7487-0578-MO*.mat')
 for ii=1:length(dirlist)
     cd(dirlist(ii).name(1:end-4))
     [~, SubjectName] = system('basename "$PWD"');
@@ -61,7 +61,7 @@ for ii=1:length(dirlist)
     cd ..
 end
 
-dirlist = dir('2023-U7778*.mat')
+dirlist = dir('2023-U7487-0578-MO*.mat')
 for ii=1:length(dirlist)
     cd(dirlist(ii).name(1:end-4))
     [~, SubjectName] = system('basename "$PWD"');

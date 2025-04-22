@@ -47,6 +47,9 @@ for i = 1:length(dir_list)
 end
 cd ..
 
+mkdir('Archieve');
+mkdir('Test&Dev');
+
 disp('Changing Subject Folder Name')
 dir1 = dir('Ax_BRAIN_MRE/*.dcm');
 info = dicominfo(fullfile('Ax_BRAIN_MRE', dir1(1).name));

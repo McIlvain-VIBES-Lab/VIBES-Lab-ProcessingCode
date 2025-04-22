@@ -1,0 +1,47 @@
+Subzone Reconstruction Data File
+Problem Type <0=Forward Problem Only> <1+=Inverse Problem>
+0
+Forward problem type <0=simulationstyle bcs, 1 = parameter test BCs
+0
+Node File:
+mre_for_inversion_voxelmesh.reg.nod
+Element File:
+mre_for_inversion_voxelmesh.hom.elm 
+Boundary Condition File:
+mre_for_inversion_voxelmesh.bnd.nobtm.bcs 
+Output File Stem:
+mre_for_inversion_voxelmesh_OUTPUT
+Print Detailed Runtime Debugging and Execution Comments <verb> <file>:
+.false.,.false.
+Driving Frequency (Hz)
+50.d0
+Material Model <1=isotropic> <2=orthotropic> <3=iso compress> <4 poro>:
+1
+Number of Material Properties:
+3
+Material Description Style <1=nodal> <2=element> [<shear modulus> <L modulus> <log10(hyd cond)> <porosity>]:
+1,1,1
+Number of Parameters per Material Point:
+1,1,1
+Property Scalars:
+ 1.0d0, 1.0d0, 1000.d0, 0.d0, 1.d6, 0.d0
+Number of Material Property Mesh Resolutions:
+1
+Material Property Mesh Resolutions (x,y,z):
+0.000625000 , 0.0006250000 , 0.0006250000
+ Material Mesh Index (1st line real part, 2nd line imag)
+  1 1 1
+  1 1 1
+Material Type Values:
+1	2113.0	0862.0	1.0000	1.0000	1.0000	1.0000
+2	0900.0	0300.0	1.0000	1.0000	1.0000	1.0000
+3	2831.0	0897.0	1.0000	1.0000	1.0000	1.0000
+4	2759.0	1280.0	1.0000	1.0000	1.0000	1.0000
+5	2577.0	0923.0	1.0000	1.0000	1.0000	1.0000
+6	3565.0	1369.0	1.0000	1.0000	1.0000	1.0000
+7	3518.0	1372.0	1.0000	1.0000	1.0000	1.0000
+8	3053.0	1221.0	1.0000	1.0000	1.0000	1.0000
+9	2583.0	1142.0	1.0000	1.0000	1.0000	1.0000
+9	0300.0	0100.0	1.0000	1.0000	1.0000	1.0000
+
+

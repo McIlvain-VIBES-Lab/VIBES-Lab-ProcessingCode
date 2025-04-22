@@ -34,18 +34,44 @@ for i = 1:length(dir_list)
         continue;
     end
 
+for i = 1:length(dir_list)
+    if strcmp(dir_list(i).name, '.') || strcmp(dir_list(i).name, '..')
+        continue;
+    end
+
     if dir_list(i).isdir && startsWith(dir_list(i).name, 'Ax_BRAIN_MRE')
-        movefile(dir_list(i).name, ['..' filesep 'Ax_BRAIN_MRE']);
+        try
+            movefile(dir_list(i).name, ['..' filesep 'Ax_BRAIN_MRE']);
+        catch ME
+            fprintf('Could not move folder %s: %s\n', dir_list(i).name, ME.message);
+            continue;
+        end
     end
 
     if dir_list(i).isdir && (startsWith(dir_list(i).name, '102_T1W_3D_TFE') || startsWith(dir_list(i).name, 'ORIG_102_T1W_3D_TFE'))
-        movefile(dir_list(i).name, ['..' filesep 'T1W_3D_TFE']);
+        try
+            movefile(dir_list(i).name, ['..' filesep 'T1W_3D_TFE']);
+        catch ME
+            fprintf('Could not move folder %s: %s\n', dir_list(i).name, ME.message);
+            continue;
+        end
     end
+
     if dir_list(i).isdir && startsWith(dir_list(i).name, 'QSM')
-        movefile(dir_list(i).name, ['..' filesep 'QSM']);
+        try
+            movefile(dir_list(i).name, ['..' filesep 'QSM']);
+        catch ME
+            fprintf('Could not move folder %s: %s\n', dir_list(i).name, ME.message);
+            continue;
+        end
     end
 end
+
+end
 cd ..
+
+mkdir('Archieve');
+mkdir('Test&Dev');
 
 disp('Changing Subject Folder Name')
 dir1 = dir('Ax_BRAIN_MRE/*.dcm');
@@ -54,6 +80,8 @@ new_folder = fullfile(expected_root, info.PatientID);
 movefile(current_path, new_folder);
 disp(new_folder)
 cd(new_folder)
+
+
 rmdir(current_path, 's');
 
 

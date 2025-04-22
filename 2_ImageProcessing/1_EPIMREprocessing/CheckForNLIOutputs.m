@@ -1,11 +1,13 @@
 
 
-dirlist = dir('*-*');
+dirlist = dir('*-*MO*');
 dirlist = dirlist([dirlist.isdir]);  % keep only directories
 dirlist = dirlist(~ismember({dirlist.name}, {'.', '..'}));  % exclude . and ..
 for ii=1:length(dirlist)
     cd(dirlist(ii).name)
     SubjectName = dirlist(ii).name;
+    
+    
     if ~exist('nli_outputs','dir')
       %  remotePath = sprintf('/insomnia001/depts/mcilvain/users/mcilvain/%s/hex', SubjectName);
         insomniapath = ['/insomnia001/depts/mcilvain/users/mcilvain/', SubjectName, '/hex/', SubjectName, '_voxelmesh'];
