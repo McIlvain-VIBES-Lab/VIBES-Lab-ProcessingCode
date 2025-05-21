@@ -228,7 +228,8 @@ vcomp=0.4; % Default compressible Poisson ratio
     fprintf(fid,'## auto post processing \n');
     fprintf(fid,'srchtag=*RE..*0001*prop.01.mtr\n');
     fprintf(fid,'outstm=$(sed ''21!d'' runfile-v9_visc_incomp)\n');
-    fprintf(fid,'/insomnia001/depts/mcilvain/projects/Code/MREpostprocess/MREpostprocessv8.x $outstm$srchtag');fprintf(fid,'\n');
+    fprintf(fid, 'cd inv \n');
+    fprintf(fid,'/insomnia001/depts/mcilvain/projects/Code/MREpostprocess/MREpostprocessv8.x $srchtag');fprintf(fid,'\n');
     fprintf(fid,'exit 0  \n');
     fclose(fid);
 
@@ -447,7 +448,8 @@ vcomp=0.4; % Default compressible Poisson ratio
     fprintf(fid,'## auto post processing \n');
     fprintf(fid,'srchtag=*RE..*0001*prop.01.mtr\n');
     fprintf(fid,'outstm=$(sed ''21!d'' runfile-v9_visc_incomp)\n');
-    fprintf(fid,'/insomnia001/depts/mcilvain/projects/Code/MREpostprocess/MREpostprocessv8.x $outstm$srchtag');fprintf(fid,'\n');
+    fprintf(fid, 'cd inv \n');
+    fprintf(fid,'/insomnia001/depts/mcilvain/projects/Code/MREpostprocess/MREpostprocessv8.x $srchtag');fprintf(fid,'\n');
     fprintf(fid,'exit 0  \n');
     fclose(fid);
 
@@ -661,7 +663,8 @@ vcomp=0.4; % Default compressible Poisson ratio
     fprintf(fid,'## auto post processing \n');
     fprintf(fid,'srchtag=*RE..*0001*prop.01.mtr\n');
     fprintf(fid,'outstm=$(sed ''21!d'' runfile-v9_visc_incomp)\n');
-    fprintf(fid,'/insomnia001/depts/mcilvain/projects/Code/MREpostprocess/MREpostprocessv8.x $outstm$srchtag');fprintf(fid,'\n');
+    fprintf(fid, 'cd inv \n');
+    fprintf(fid,'/insomnia001/depts/mcilvain/projects/Code/MREpostprocess/MREpostprocessv8.x $srchtag');fprintf(fid,'\n');
     fprintf(fid,'exit 0  \n');
     fclose(fid);
 
@@ -876,7 +879,8 @@ vcomp=0.4; % Default compressible Poisson ratio
     fprintf(fid,'## auto post processing \n');
     fprintf(fid,'srchtag=*RE..*0001*prop.01.mtr\n');
     fprintf(fid,'outstm=$(sed ''21!d'' runfile-v9_visc_incomp)\n');
-    fprintf(fid,'/insomnia001/depts/mcilvain/projects/Code/MREpostprocess/MREpostprocessv8.x $outstm$srchtag');fprintf(fid,'\n');
+    fprintf(fid, 'cd inv \n');
+    fprintf(fid,'/insomnia001/depts/mcilvain/projects/Code/MREpostprocess/MREpostprocessv8.x $srchtag');fprintf(fid,'\n');
     %fprintf(fid)
     fprintf(fid,'exit 0  \n');
     fclose(fid);

@@ -23,7 +23,7 @@ mkdir('File_Storage')
 % 
 % 
 % Copy To NLI Folder
-[~, c] = system('basename "$PWD"');
+[~, SubjectName] = system('basename "$PWD"');
 SubjectName = strtrim(SubjectName); 
 addpath(SubjectName)
 

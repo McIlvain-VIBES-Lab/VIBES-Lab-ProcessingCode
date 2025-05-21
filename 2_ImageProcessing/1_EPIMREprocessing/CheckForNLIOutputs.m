@@ -1,57 +1,106 @@
+function CheckForNLIOutputs
 
+code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline';
+common_code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/';
+addpath('/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/1_StartupCode');
+addpath(code_path);
+addpath(common_code_path)
+startup_matlab_general
 
-dirlist = dir('*-*MO*');
+dirlist = dir('*-*');
 dirlist = dirlist([dirlist.isdir]);  % keep only directories
 dirlist = dirlist(~ismember({dirlist.name}, {'.', '..'}));  % exclude . and ..
 for ii=1:length(dirlist)
     cd(dirlist(ii).name)
-    SubjectName = dirlist(ii).name;
+    SubjectName = sprintf('%s',dirlist(ii).name);
     
     
-    if ~exist('nli_outputs','dir')
-      %  remotePath = sprintf('/insomnia001/depts/mcilvain/users/mcilvain/%s/hex', SubjectName);
-        insomniapath = ['/insomnia001/depts/mcilvain/users/mcilvain/', SubjectName, '/hex/', SubjectName, '_voxelmesh'];
-        system(sprintf('ssh gm3128@insomnia.rcs.columbia.edu "cd /%s/ && sbatch McIlvain-Submitv9_visc_incomp"',insomniapath))
+    if ~exist('NLI_Outputs','dir')
+% remotePath = sprintf('/insomnia001/depts/mcilvain/users/mcilvain/%s/hex', SubjectName);
+insomniapath = ['/insomnia001/depts/mcilvain/users/mcilvain/', SubjectName, '/hex/', SubjectName, '_voxelmesh'];
+%system(sprintf('ssh gm3128@insomnia.rcs.columbia.edu "cd /%s/ && sbatch McIlvain-Submitv9_visc_incomp"',insomniapath))
 
-        filePattern = '*0100.prop*';
-        checkCmd = sprintf('ssh gm3128@insomnia.rcs.columbia.edu "ls %s/inv/%s > /dev/null 2>&1"', insomniapath, filePattern);
-        [status, result] = system(checkCmd);
+filePattern = '*0100.prop*';
+checkCmd = sprintf('ssh gm3128@insomnia.rcs.columbia.edu "ls %s/inv/%s > /dev/null 2>&1"', insomniapath, filePattern);
+[status, result] = system(checkCmd);
 
-        if status == 0
-            system(sprintf('scp -r gm3128@insomnia.rcs.columbia.edu:/insomnia001/depts/mcilvain/users/mcilvain/%s .', SubjectName));
-            cd(SubjectName)
-            MRE_v9_process_folder
-           
-            cd hex;
-            dir2 = dir('*voxelmesh');
-            cd(dir2.name);
-            cd inv;
-            dir2 = dir('*avlast08..0100.Re*');
-            load(dir2(1).name);
-            cd ../../../
-        Rx = double(abs(RealShear-3300)<0.0001);
-        Rxm = abs(1-Rx);
-        RealShear = RealShear.*Rxm;
-        ImagShear = ImagShear.*Rxm;
-        DR = DR.*Rxm;
-        save RealShear.mat RealShear
-        save ImagShear.mat ImagShear
-        save DR.mat DR
+if status == 0
+system(sprintf('scp -r gm3128@insomnia.rcs.columbia.edu:/insomnia001/depts/mcilvain/users/mcilvain/%s .', SubjectName));
+cd(SubjectName)
+MRE_v9_process_folder
 
-        ComplexShear = RealShear + (i*ImagShear);
-        AbsShear = sqrt(((RealShear.^2)+(ImagShear.^2)));
-        Mu = 2*(AbsShear.^2)./(RealShear+AbsShear);
-        save ComplexShear.mat ComplexShear
-        save AbsShear.mat AbsShear
-        save Mu.mat Mu
-        figure;im(Mu(:,:,:)); caxis([0 6000]); colorbar; colormap(gca,stiff_color);
-        print('-dpng','-r300',sprintf('Mu_%s',dirlist(ii).name(1:end-4)))
+cd hex;
+dir2 = dir('*voxelmesh');
+cd(dir2.name);
+cd inv;
+dir2 = dir('*avlast08..0100.Re*');
+load(dir2(1).name);
+cd ../../../
+Rx = double(abs(RealShear-3300)<0.0001);
+Rxm = abs(1-Rx);
+RealShear = RealShear.*Rxm;
+ImagShear = ImagShear.*Rxm;
+DR = DR.*Rxm;
+save RealShear.mat RealShear
+save ImagShear.mat ImagShear
+save DR.mat DR
+
+ComplexShear = RealShear + (i*ImagShear);
+AbsShear = sqrt(((RealShear.^2)+(ImagShear.^2)));
+Mu = 2*(AbsShear.^2)./(RealShear+AbsShear);
+save ComplexShear.mat ComplexShear
+save AbsShear.mat AbsShear
+save Mu.mat Mu
+figure;im(Mu(:,:,:)); caxis([0 6000]); colorbar; colormap(gca,stiff_color);
+print('-dpng','-r300',sprintf('Mu_%s',dirlist(ii).name(1:end)))
+end
+
         cd ..
-        mkdir('nli_outputs')
-        save nli_outputs/Mu.mat
-        save nli_outputs/DR.mat
-        save nli_outputs/Mask.mat
-        print('-dpng','-r300',sprintf('nli_outputs/Mu_%s',dirlist(ii).name(1:end-4)))
+        % mkdir('nli_outputs')
+        % save nli_outputs/Mu.mat Mu
+        % save nli_outputs/DR.mat DR
+        % save nli_outputs/mask.mat mask
+        % print('-dpng','-r300',sprintf('nli_outputs/Mu_%s',dirlist(ii).name(1:end-4)))
+        
+        %TS added 56-93 on May 1
+        movefile(SubjectName, 'NLI_Outputs');
+        mkdir('Nifti_Data');
+        
+        load(fullfile('NLI_Outputs', 'Mu.mat'));
+        load(fullfile('NLI_Outputs', 'DR.mat'));
+        load('t2stack.mat')
+        
+        Mu(isnan(Mu)) = 0;
+        Mu = single(Mu);
+        Mu = flip(flip(permute(Mu, [2 1 3]), 1), 2);
+        
+        DR(isnan(DR)) = 0;
+        DR = single(DR);
+        DR = flip(flip(permute(DR, [2 1 3]), 1), 2);
+    
+        t2stack(isnan(t2stack)) = 0;
+        t2stack = single(t2stack);
+        t2stack = flip(flip(permute(t2stack, [2 1 3]), 1), 2);
+    
+        Mu_nii = load_nii('t2stack.nii');
+        Mu_nii.img = Mu;
+        mu_path = fullfile('Nifti_Data', 'Stiffness.nii');
+        save_nii(Mu_nii, mu_path);
+        system(['bash /Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/Teah_test/process_lipton_mre.sh ', mu_path])
+    
+        DR_nii = load_nii('t2stack.nii');
+        DR_nii.img = DR;
+        dr_path = fullfile('Nifti_Data', 'DampingRatio.nii');
+        save_nii(DR_nii, dr_path);
+        system(['bash /Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/Teah_test/process_lipton_mre.sh ', dr_path]);
+    
+        t2_nii = load_nii('t2stack.nii');
+        t2_nii.img = t2stack;
+        mag_path = fullfile('Nifti_Data', 'Magnitude.nii');
+        save_nii(t2_nii, mag_path);
+        system(['bash /Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/Teah_test/process_lipton_mre.sh ', mag_path]);
+    
+        delete(fullfile('Nifti_Data', '*.nii'));
 
         else
             fprintf(sprintf('%s NLI data not found.\n',SubjectName));
@@ -59,3 +108,5 @@ for ii=1:length(dirlist)
     end
    cd ..
 end
+
+% end

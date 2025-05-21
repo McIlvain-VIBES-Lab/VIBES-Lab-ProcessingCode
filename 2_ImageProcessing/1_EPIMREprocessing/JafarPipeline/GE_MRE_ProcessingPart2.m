@@ -6,9 +6,12 @@ function [mreParams,mask,Zmotion,Ymotion,Xmotion,t2stack,OSS_SNR]= GE_MRE_Proces
 % Grace McIlvain
 
 % This code makes phase into wave maps for NLI
-load maskx.mat
+load('t2mask_bet.mat')
 
+if exist('maskx.mat')
+load maskx.mat
 mask = mask.*abs(1-maskx);
+end
 save t2mask_final.mat mask
 
 image = flip(flip(permute(phsimg,[2 1 3 4 5]),2),1);

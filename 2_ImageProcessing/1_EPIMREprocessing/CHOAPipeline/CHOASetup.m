@@ -20,7 +20,7 @@ end
 disp('Changing Folder to study')
 dir_list = dir; 
 for i = 1:length(dir_list)
-    if dir_list(i).isdir %&& contains(dir_list(i).name, 'M')
+    if dir_list(i).isdir && contains(dir_list(i).name, 'M')
         movefile(dir_list(i).name, 'study');
         break; 
     end
@@ -28,18 +28,19 @@ end
 
 disp('Pulling T1, MRE Phase and Mag out for study folder')
 cd study/
+cd (dir('Mri_*').name)
 
 dir_list = dir;
 for i = 1:length(dir_list)
     if strcmp(dir_list(i).name, '.') || strcmp(dir_list(i).name, '..')
         continue;
     end
-    % 
-    % if dir_list(i).isdir && startsWith(dir_list(i).name, '3D_T1')
-    %     movefile(dir_list(i).name, ['../' filesep '3D_T1_MPRAGE_SAG']);
-    % end
 
-    if dir_list(i).isdir && (contains(dir_list(i).name, 'XA60_Mag'))
+    if dir_list(i).isdir && startsWith(dir_list(i).name, '3D_T1_MPRAGE_SAG')
+        movefile(dir_list(i).name, ['../' filesep '3D_T1_MPRAGE_SAG']);
+    end
+
+    if dir_list(i).isdir && (contains(dir_list(i).name, 'XA60_Mag'))  
         movefile(dir_list(i).name, ['../' filesep 'MRE_3D_AX_ON_AXIS_Mag']);
     end
     if dir_list(i).isdir && startsWith(dir_list(i).name, 'Brain_MRE_C2P_XA60_P_P')

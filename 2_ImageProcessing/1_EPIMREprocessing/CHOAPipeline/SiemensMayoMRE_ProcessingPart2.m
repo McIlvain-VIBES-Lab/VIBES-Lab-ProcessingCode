@@ -64,7 +64,8 @@ mreParams.nz = nz;
 mreParams.freq = freq;
 mreParams.oss_snr = OSS_SNR;
 
-save(sprintf('%s.mat',mreParams.subj),'mreParams','mask','Zmotion','Ymotion','Xmotion','t2stack','OSS_SNR')
+%save(sprintf('%s.mat',mreParams.subj),'mreParams','mask','Zmotion','Ymotion','Xmotion','t2stack','OSS_SNR')
+save(sprintf('%s',mreParams.subj),'mreParams','mask','Zmotion','Ymotion','Xmotion','t2stack','OSS_SNR')
 
 cd ..
 

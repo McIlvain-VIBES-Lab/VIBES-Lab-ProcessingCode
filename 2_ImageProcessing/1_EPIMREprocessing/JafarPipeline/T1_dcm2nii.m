@@ -8,9 +8,13 @@ function T1_dcm2nii
    %!/Applications/MRIcron/dcm2niix * -4fn
    !/Applications/MRIcron/dcm2niix *
    !gunzip -f *.nii.gz
+   if exist('co*.nii')
    !mv co*.nii coT1W_3D_TFE.nii
    !cp coT1W_3D_TFE.nii ../coT1W_3D_TFE.nii
-
+   else
+   !mv *.nii coT1W_3D_TFE.nii
+   !cp coT1W_3D_TFE.nii ../coT1W_3D_TFE.nii
+   end
 end
 
   

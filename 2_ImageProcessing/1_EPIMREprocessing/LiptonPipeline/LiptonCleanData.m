@@ -11,12 +11,15 @@ mkdir('File_Storage')
 !mv study/ File_Storage
 !mv T1W_3D_TFE/ File_Storage/
 !mv dcfiles/ File_Storage/
+!mv QSM/ File_Storage/
 
 !mv maskx.mat File_Storage/
 !mv mre_mag.nii File_Storage/
 !mv mre_phs.nii File_Storage/
 !mv mre_mask.nii File_Storage/
 !mv mre_output.nii File_Storage/
+!mv OSS_SNR.mat File_Storage/
+
 
 !mv mreimages_unwrap.mat File_Storage/
 !mv t2mask_bet.mat File_Storage/
@@ -27,11 +30,12 @@ mkdir('File_Storage')
 
 SubjectName = strtrim(SubjectName); 
 addpath(SubjectName)
-
+load('mre_for_inversion.mat')
 save(sprintf('%s.mat',SubjectName),'mreParams','mask','Zmotion','Ymotion','Xmotion','t2stack','OSS_SNR')
 UIUC_data_convert_mcilvain(SubjectName)
 cd(sprintf('%s',SubjectName))
 MRE_preprocess_v9_mcilvain('default',SubjectName)
+eval(sprintf('!mv %s.mat %s/',SubjectName,SubjectName))
 cd ..
 %eval(sprintf('!mv %s.mat /Volumes/McIlvainDrive2/Send_to_NLI',SubjectName))
 %eval(sprintf('!mv %s /Volumes/McIlvainDrive2/Send_to_NLI',SubjectName))

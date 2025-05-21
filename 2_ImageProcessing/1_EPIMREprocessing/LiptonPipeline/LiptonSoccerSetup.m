@@ -1,8 +1,8 @@
-function [info] = LiptonSoccerSetup(subjpath)
+function [info] = LiptonSoccerSetup(subjpath,code_path)
 disp('Setting Up Files')
 disp('Do Not Change Your Location')
-code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline';
-addpath(code_path);
+%code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline';
+%addpath(code_path);
 
 cd (subjpath); 
 expected_root = '/Volumes/McIlvainDrive2/Lipton_Soccer_Study/SUBJECT_DATA';
@@ -48,7 +48,7 @@ for i = 1:length(dir_list)
         end
     end
 
-    if dir_list(i).isdir && (startsWith(dir_list(i).name, '102_T1W_3D_TFE') || startsWith(dir_list(i).name, 'ORIG_102_T1W_3D_TFE'))
+    if dir_list(i).isdir && (startsWith(dir_list(i).name, '102_T1W_3D_TFE') ) % || startsWith(dir_list(i).name, 'ORIG_102_T1W_3D_TFE'))
         try
             movefile(dir_list(i).name, ['..' filesep 'T1W_3D_TFE']);
         catch ME
@@ -70,8 +70,8 @@ end
 end
 cd ..
 
-mkdir('Archieve');
-mkdir('Test&Dev');
+mkdir('Archive');
+mkdir('Test_Dev');
 
 disp('Changing Subject Folder Name')
 dir1 = dir('Ax_BRAIN_MRE/*.dcm');

@@ -1,5 +1,9 @@
 function GE_MRE_DistortionCorrection
 %% Distortion Correction Lipton Data
+!$FSLDIR/bin/fslmaths QSM.nii -mul 0.000127728 QSM_fieldmap_hz.nii.gz
+!$FSLDIR/bin/fslmaths QSM_fieldmap_hz.nii.gz -mul 6.283185 QSM_fieldmap_rad.nii.gz
+!gunzip -f *.nii.gz
+
 
 % !$FSLDIR/bin/fsl_prepare_fieldmap SIEMENS phs/phs.nii mag/mag_brain.nii fmap_rads 2.46
 % !gunzip -f *.nii.gz

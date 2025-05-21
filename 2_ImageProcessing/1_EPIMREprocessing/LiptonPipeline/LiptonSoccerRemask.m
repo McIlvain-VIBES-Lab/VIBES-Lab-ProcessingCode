@@ -1,9 +1,9 @@
-%% Lipton Wrapper Code
-% March 29th 2025
-% Grace McIlvain Teah Serani
+%% Lipton Remasking Code
+% May 6, 2025
+% Allen Hong Grace McIlvain Teah Serani
 
 clear all; close all;
-delete(gcp('nocreate'));
+
 disp('Code Starting Please Wait')
 
 code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline';
@@ -13,13 +13,12 @@ addpath(code_path);
 addpath(common_code_path)
 startup_matlab_general
 
-%run(fullfile(startup_path, 'startup_matlab_general.m'));
-
-% Now you can call the LiptonSoccerSetup function from anywhere
-% function added by TS March 26th 2025
-% This will rename the subject dir and pull&name T1W and Ax_Brain
+% Sets the paths and directories
 subjpath = pwd; 
-[info] = LiptonSoccerSetup(subjpath,code_path);
+cd File_Storage/
+dir1 = dir('Ax_BRAIN_MRE/*.dcm');
+info = dicominfo(fullfile('Ax_BRAIN_MRE', dir1(1).name));
+cd ./
 
 % Section 1
 dx = (info.ReconstructionDiameter)/double(info.Height);
@@ -28,13 +27,7 @@ dz = info.SliceThickness;
 freq =double(50); % TS: We need to check where the frequency is in the header
 
 cd('Ax_BRAIN_MRE')
-[phsimg,t2stack] = GE_MRE_ProcessingPart1(dx,dy,dz,freq); 
-
-% Anatomical Scan DCM to NII
-%cd('T1W_3D_TFE')
-T1_dcm2nii 
-%cd ..
-
+[phsimg,t2stack] = GE_MRE_RemaskProcessingPart1(dx,dy,dz,freq); 
 
 %% Manual Masking (Human Brain)
 close all;
@@ -42,7 +35,7 @@ load('t2mask_bet.mat')
 load('t2stack.mat')
 tmp = (t2stack.*mask)./(8000);
 
-maskx = zeros(size(mask));
+load File_Storage/maskx.mat
 
 % look at the whole brain
 figure;im(tmp);caxis([0 1])
@@ -108,7 +101,6 @@ while true
 end
 
 %% Section 2
-!mkdir dcfiles
 [mreParams,mask,Zmotion,Ymotion,Xmotion,t2stack,OSS_SNR] = GE_MRE_ProcessingPart2(phsimg,t2stack,mask,dx,dy,dz,freq);
 
 %% Section 3
@@ -118,3 +110,6 @@ LiptonCleanData(mreParams,mask,Zmotion,Ymotion,Xmotion,t2stack,OSS_SNR)
 %% Section 4
 disp("Running Freesurfer on Insomnia")
 system(['sh /Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline/freesurfer_insomnia.sh']);
+%% Section 5
+movefile NLI_Outputs/ BadMask
+movefile BadMask Archive/

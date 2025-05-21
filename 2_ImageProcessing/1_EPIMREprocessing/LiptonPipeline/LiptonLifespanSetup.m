@@ -47,8 +47,8 @@ for i = 1:length(dir_list)
 end
 cd ..
 
-mkdir('Archieve');
-mkdir('Test&Dev');
+mkdir('Archive');
+mkdir('Test_Dev');
 
 disp('Changing Subject Folder Name')
 dir1 = dir('Ax_BRAIN_MRE/*.dcm');

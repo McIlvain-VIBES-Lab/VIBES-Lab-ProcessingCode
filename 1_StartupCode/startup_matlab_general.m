@@ -1,5 +1,6 @@
 % setenv( 'FSLDIR', '/Users/student/fsl' ); % Setting environment variable allen change
-setenv( 'FSLDIR', '/Users/vibes-macmini-3/fsl' ); % Setting environment variable
+setenv( 'FSLDIR', '/Users/studio1/fsl' ); % Setting environment variable
+%setenv( 'FSLDIR', '/Users/studio1/fsl' ); % Setting environment variable
 setenv( 'FSLOUTPUTTYPE', 'NIFTI_GZ' ); % Setting environment variable
 fsldir = getenv('FSLDIR'); % gets environment of '/usr/local/fsl', since we have assigned FSLDIR to this value, and assigns it to variable 'fsldir'
 fsldirmpath = sprintf('%s/etc/matlab',fsldir);
@@ -31,7 +32,7 @@ addpath(genpath(sprintf('%s/2_ImageProcessing/4_Inversion/NLI/NLIPrep/MREpostpro
 addpath(genpath(sprintf('%s/2_ImageProcessing/4_Inversion/NLI/NLIPrep/MREpostprocess/convcode',script_path(1:end-14))))
 addpath(genpath(sprintf('%s/2_ImageProcessing/4_Inversion/NLI/NLIPrep/misc',script_path(1:end-14))))
 
-% addpath(sprintf('%s/General_Code',pwd))
+% addpath(sprintf('%s/General_Code',c))
 % clc
 % addpath(sprintf('%s/General_Code/recon_3Dspiral',pwd))
 % addpath(sprintf('%s/General_Code/recon_3Dspiral/Gridding_for3D',pwd))
@@ -41,7 +42,7 @@ addpath(genpath(sprintf('%s/2_ImageProcessing/4_Inversion/NLI/NLIPrep/misc',scri
 % 
 % addpath(genpath(sprintf('%s/General_Code/nifti',pwd)))
 % addpath(genpath(sprintf('%s/General_Code/oss_snr',pwd)))
-cd General_Code
+%cd General_Code
 load('mre_colormaps.mat');
 
-cd ..
+%cd ..

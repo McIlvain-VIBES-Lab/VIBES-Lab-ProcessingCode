@@ -26,9 +26,9 @@ freq =double(60); % TS: We need to check if this is actually the frequency
 [images_phs,t2stack] = SiemensMayoMRE_ProcessingPart1(dx,dy,dz,freq); 
 
 % Anatomical Scan DCM to NII
-cd('3D_T1_MPRAGE_SAG')
+%cd('3D_T1_MPRAGE_SAG')
 %T1_dcm2nii 
-cd ..
+%cd ..
 
 
 %% Manual Masking (Human Brain)

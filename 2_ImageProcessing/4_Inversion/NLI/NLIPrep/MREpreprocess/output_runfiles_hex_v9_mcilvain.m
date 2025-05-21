@@ -206,10 +206,10 @@ vcomp=0.4; % Default compressible Poisson ratio
     fprintf(fid,'#!/bin/bash -l \n');
     fprintf(fid,'#SBATCH --account=mcilvain \n');
     fprintf(fid,'#SBATCH --job-name=mre_processing \n');
-    fprintf(fid,'#SBATCH --time=23:00:00 \n');
+    fprintf(fid,'#SBATCH --time=10:00:00 \n');
     fprintf(fid,'#SBATCH --ntasks=30 \n');
     fprintf(fid,'#SBATCH --cpus-per-task=1 \n');
-    fprintf(fid,'#SBATCH --mem=100G \n');
+    fprintf(fid,'#SBATCH --mem=60G \n');
     fprintf(fid,'#SBATCH --partition=standard \n');
 
     fprintf(fid,'SIF_PATH="/insomnia001/depts/mcilvain/projects/NLI/mre-neuro-processing-final.sif" \n');
@@ -222,7 +222,8 @@ vcomp=0.4; % Default compressible Poisson ratio
     fprintf(fid,'## auto post processing \n');
     fprintf(fid,'srchtag=*RE..*0001*prop.01.mtr\n');
     fprintf(fid,'outstm=$(sed ''21!d'' runfile-v9_visc_incomp)\n');
-    fprintf(fid,'/insomnia001/depts/mcilvain/projects/Code/MREpostprocess/MREpostprocessv8.x $outstm$srchtag');fprintf(fid,'\n');
+    fprintf(fid, 'cd inv \n');
+    fprintf(fid,'/insomnia001/depts/mcilvain/projects/Code/MREpostprocess/MREpostprocessv8.x $srchtag');fprintf(fid,'\n');
     fprintf(fid,'exit 0  \n');
     fclose(fid);
 
@@ -425,10 +426,10 @@ vcomp=0.4; % Default compressible Poisson ratio
     fprintf(fid,'#!/bin/bash -l \n');
     fprintf(fid,'#SBATCH --account=mcilvain \n');
     fprintf(fid,'#SBATCH --job-name=mre_processing \n');
-    fprintf(fid,'#SBATCH --time=23:00:00 \n');
+    fprintf(fid,'#SBATCH --time=10:00:00 \n');
     fprintf(fid,'#SBATCH --ntasks=30 \n');
     fprintf(fid,'#SBATCH --cpus-per-task=1 \n');
-    fprintf(fid,'#SBATCH --mem=100G \n');
+    fprintf(fid,'#SBATCH --mem=60G \n');
     fprintf(fid,'#SBATCH --partition=standard \n');
 
     fprintf(fid,'SIF_PATH="/insomnia001/depts/mcilvain/projects/NLI/mre-neuro-processing-final.sif" \n');
@@ -441,7 +442,8 @@ vcomp=0.4; % Default compressible Poisson ratio
     fprintf(fid,'## auto post processing \n');
     fprintf(fid,'srchtag=*RE..*0001*prop.01.mtr\n');
     fprintf(fid,'outstm=$(sed ''21!d'' runfile-v9_visc_incomp)\n');
-    fprintf(fid,'/insomnia001/depts/mcilvain/projects/Code/MREpostprocess/MREpostprocessv8.x $outstm$srchtag');fprintf(fid,'\n');
+    fprintf(fid, 'cd inv \n');
+    fprintf(fid,'/insomnia001/depts/mcilvain/projects/Code/MREpostprocess/MREpostprocessv8.x $srchtag');fprintf(fid,'\n');
     fprintf(fid,'exit 0  \n');
     fclose(fid);
 
@@ -640,7 +642,7 @@ vcomp=0.4; % Default compressible Poisson ratio
     fprintf(fid,'#!/bin/bash -l \n');
     fprintf(fid,'#SBATCH --account=mcilvain \n');
     fprintf(fid,'#SBATCH --job-name=mre_processing \n');
-    fprintf(fid,'#SBATCH --time=05:00:00 \n');
+    fprintf(fid,'#SBATCH --time=10:00:00 \n');
     fprintf(fid,'#SBATCH --ntasks=30 \n');
     fprintf(fid,'#SBATCH --cpus-per-task=1 \n');
     fprintf(fid,'#SBATCH --mem=60G \n');
@@ -655,7 +657,8 @@ vcomp=0.4; % Default compressible Poisson ratio
     fprintf(fid,'## auto post processing \n');
     fprintf(fid,'srchtag=*RE..*0001*prop.01.mtr\n');
     fprintf(fid,'outstm=$(sed ''21!d'' runfile-v9_visc_incomp)\n');
-    fprintf(fid,'/insomnia001/depts/mcilvain/projects/Code/MREpostprocess/MREpostprocessv8.x $outstm$srchtag');fprintf(fid,'\n');
+    fprintf(fid, 'cd inv \n');
+    fprintf(fid,'/insomnia001/depts/mcilvain/projects/Code/MREpostprocess/MREpostprocessv8.x $srchtag');fprintf(fid,'\n');
     fprintf(fid,'exit 0  \n');
     fclose(fid);
 
@@ -854,10 +857,10 @@ vcomp=0.4; % Default compressible Poisson ratio
     fprintf(fid,'#!/bin/bash -l \n');
     fprintf(fid,'#SBATCH --account=mcilvain \n');
     fprintf(fid,'#SBATCH --job-name=mre_processing \n');
-    fprintf(fid,'#SBATCH --time=23:00:00 \n');
+    fprintf(fid,'#SBATCH --time=10:00:00 \n');
     fprintf(fid,'#SBATCH --ntasks=30 \n');
     fprintf(fid,'#SBATCH --cpus-per-task=1 \n');
-    fprintf(fid,'#SBATCH --mem=100G \n');
+    fprintf(fid,'#SBATCH --mem=60G \n');
     fprintf(fid,'#SBATCH --partition=standard \n');
 
     fprintf(fid,'SIF_PATH="/insomnia001/depts/mcilvain/projects/NLI/mre-neuro-processing-final.sif" \n');
@@ -870,7 +873,8 @@ vcomp=0.4; % Default compressible Poisson ratio
     fprintf(fid,'## auto post processing \n');
     fprintf(fid,'srchtag=*RE..*0001*prop.01.mtr\n');
     fprintf(fid,'outstm=$(sed ''21!d'' runfile-v9_visc_incomp)\n');
-    fprintf(fid,'/insomnia001/depts/mcilvain/projects/Code/MREpostprocess/MREpostprocessv8.x $outstm$srchtag');fprintf(fid,'\n');
+    fprintf(fid, 'cd inv \n');
+    fprintf(fid,'/insomnia001/depts/mcilvain/projects/Code/MREpostprocess/MREpostprocessv8.x $srchtag');fprintf(fid,'\n');
     %fprintf(fid)
     fprintf(fid,'exit 0  \n');
     fclose(fid);

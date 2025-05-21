@@ -1,0 +1,32 @@
+function CheckForNLIOutputs
+
+code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline';
+common_code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/';
+addpath('/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/1_StartupCode');
+addpath(code_path);
+addpath(common_code_path)
+startup_matlab_general
+
+dirlist = dir('*-*');
+dirlist = dirlist([dirlist.isdir]);  % keep only directories
+dirlist = dirlist(~ismember({dirlist.name}, {'.', '..'}));  % exclude . and ..
+for ii=1:length(dirlist)
+    cd(dirlist(ii).name)
+    SubjectName = sprintf('%s',dirlist(ii).name);
+    
+    
+    if ~exist('NLI_Outputs','dir')
+% remotePath = sprintf('/insomnia001/depts/mcilvain/users/mcilvain/%s/hex', SubjectName);
+insomniapath = ['/insomnia001/depts/mcilvain/users/mcilvain/', SubjectName, '/hex/', SubjectName, '_voxelmesh'];
+%system(sprintf('ssh gm3128@insomnia.rcs.columbia.edu "cd /%s/ && sbatch McIlvain-Submitv9_visc_incomp"',insomniapath))
+
+filePattern = '*0100.prop*';
+checkCmd = sprintf('ssh gm3128@insomnia.rcs.columbia.edu "ls %s/inv/%s > /dev/null 2>&1"', insomniapath, filePattern);
+[status, result] = system(checkCmd);
+
+if status == 0
+system(sprintf('scp -r gm3128@insomnia.rcs.columbia.edu:/insomnia001/depts/mcilvain/users/mcilvain/%s .', SubjectName));
+cd(SubjectName)
+ 
+
+end
