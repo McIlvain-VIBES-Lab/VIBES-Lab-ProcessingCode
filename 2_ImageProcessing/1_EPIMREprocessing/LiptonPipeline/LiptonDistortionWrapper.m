@@ -1,3 +1,4 @@
+clear all
 !/Applications/MRIcron/dcm2niix *
 %% 
 seriesDir = pwd;
@@ -76,3 +77,18 @@ save_nii(tmp,'SeedReg.nii')
 
 %fileID = fopen(TEs,'r');
 fitMultiEcho('outDecayNiiFile.nii','outFieldMapNiiFile.nii','TEs.txt', 'mag.nii', 'phs.nii', 'SeedReg.nii')
+
+FMall = load_nii('outFieldMapNiiFile.nii');
+FMtmp = FMall.img;
+FM = FMtmp(:,:,:,3).*1000;
+FM2=make_nii(FM,[1 1 1]);
+save_nii(FM2,'FM.nii')
+
+
+FMmag = FMtmp(:,:,:,2);
+FMmag2=make_nii(FMmag,[1 1 1]);
+save_nii(FMmag2,'FMmag.nii')
+cd ..
+!$FSLDIR/bin/flirt -in QSM/FMmag.nii -ref t2stack.nii -out QSM/FMmag2MRE.nii -omat QSM/FMmag2MRE.mat -dof 6
+!$FSLDIR/bin/flirt -in QSM/FM.nii -ref t2stack.nii -out QSM/FM2MRE.nii -init QSM/FMmag2MRE.mat -applyxfm
+

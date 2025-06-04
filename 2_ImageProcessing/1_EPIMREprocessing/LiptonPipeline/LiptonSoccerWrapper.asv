@@ -1,9 +1,9 @@
-%% Lipton Wrapper Code
+1%% Lipton Wrapper Code
 % March 29th 2025
 % Grace McIlvain Teah Serani
 
 clear all; close all;
-
+delete(gcp('nocreate'));
 disp('Code Starting Please Wait')
 
 code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline';
@@ -31,13 +31,12 @@ cd('Ax_BRAIN_MRE')
 [phsimg,t2stack] = GE_MRE_ProcessingPart1(dx,dy,dz,freq); 
 
 % Anatomical Scan DCM to NII
-cd('T1W_3D_TFE')
+%cd('T1W_3D_TFE')
 T1_dcm2nii 
-cd ..
+%cd ..
 
 
 %% Manual Masking (Human Brain)
-
 close all;
 load('t2mask_bet.mat')
 load('t2stack.mat')
@@ -96,7 +95,7 @@ while true
     continue_input = input('Please enter Y if you are satisfied with your mask or N if you would like to make changes: ', 's');
     
     % If user is satisfied, break out of the while loop
-    if strcmpi(continue_input, 'Y')
+    if strcmpi(continue_input, 'Y' )
         disp('User is satisfied with the mask.');
         break;
     % If user wants to make changes, restart the slice selection process
@@ -109,6 +108,7 @@ while true
 end
 
 %% Section 2
+!mkdir dcfiles
 [mreParams,mask,Zmotion,Ymotion,Xmotion,t2stack,OSS_SNR] = GE_MRE_ProcessingPart2(phsimg,t2stack,mask,dx,dy,dz,freq);
 
 %% Section 3
@@ -117,4 +117,4 @@ LiptonCleanData(mreParams,mask,Zmotion,Ymotion,Xmotion,t2stack,OSS_SNR)
 
 %% Section 4
 disp("Running Freesurfer on Insomnia")
-system('sh freesurfer_insomnia.sh')
+system(['sh /Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline/freesurfer_insomnia.sh']);

@@ -14,13 +14,14 @@ addpath('/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EP
 addpath(code_path);
 subjpath = pwd; 
 JafarSetup(subjpath);
+addpath('*50*') %JAFAR
 
-dirlist2= dir('Ax_BRAIN_MRE_200Hz_HighAmp_7') %JAFAR
+dirlist2= dir('*GraceTest') %JAFAR
 for jj=1:length(dirlist2)
     display('hi')
     cd(dirlist2(jj).name)
-    dir1 = dir('*.dcm');
-    %dir1 = dir('dicoms/*.dcm');
+    %dir1 = dir('*.dcm');
+    dir1 = dir('dicoms/*.dcm');
     info = dicominfo(fullfile('dicoms', dir1(1).name));
     % Section 1
     dx = (info.ReconstructionDiameter)/double(info.Height);

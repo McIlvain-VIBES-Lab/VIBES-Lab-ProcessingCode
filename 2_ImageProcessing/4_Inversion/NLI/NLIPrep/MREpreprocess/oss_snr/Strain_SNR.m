@@ -95,8 +95,8 @@ Nfit_def=3; %Size of fitting block
 
 %% Start of Code
 
-pool = parpool;
-poolobj = gcp;
+%pool = parpool;
+%poolobj = gcp;
 
 %% Define Input Type:
 %intyp=input('Input Data Type <1=MRE .mat files, default>, <2 = Hexahedral Mesh Dsp Files>');
@@ -379,10 +379,10 @@ end
 %% Octahedral Shear Strain Calculations
 
 runtme=tic; %start timer
-
-if isempty(gcp('nocreate'))
-    parpool
-end
+% 
+% if isempty(gcp('nocreate'))
+%     parpool
+% end
 
 % OSS of motions
 [oss,ons]=OSS_calc(Ur,Ui,mask,res,filtsiz,filtwidth,ord,Nfit,Parr);
@@ -395,15 +395,15 @@ end
 % Check isotropic voxels
 h=mean(res);
 dh=range(res);
-if(dh/h)>0.05
-    disp(['XXX Warning: voxel anistropy > 5%, dh/mean(h) = ' dh/h])
-    cont=input('XXX Continue using average voxel dimension for noise estimate <y(default)/n>??','s');
-    if(~isempty(cont))
-        if(strcmp(cont,'n'))
-            error('SNR calcualtion aborted because of anisotropic voxels')
-        end
-    end
-end
+% if(dh/h)>0.05
+%     disp(['XXX Warning: voxel anistropy > 5%, dh/mean(h) = ' dh/h])
+%     cont=input('XXX Continue using average voxel dimension for noise estimate <y(default)/n>??','s');
+%     if(~isempty(cont))
+%         if(strcmp(cont,'n'))
+%             error('SNR calcualtion aborted because of anisotropic voxels')
+%         end
+%     end
+% end
 % Use Gaussian integration to calcualte the average value of OSS noise.
 a=0;
 b=pi;
@@ -431,7 +431,7 @@ if(Parr)
     Vgp=zeros([size(mask) 5]);
     Wgp=zeros([size(mask) 5]);    
     noisemaskgp=zeros([size(mask) 5]);
-    parfor ii=1:5
+    for ii=1:5
         % Calculate motion components at the gauss point
         Ugp(:,:,:,ii)=Ur(:,:,:,1).*cos(xi(ii)) - Ui(:,:,:,1).*sin(xi(ii));
         Vgp(:,:,:,ii)=Ur(:,:,:,2).*cos(xi(ii)) - Ui(:,:,:,2).*sin(xi(ii));
@@ -529,7 +529,7 @@ dim=size(mask);
 H = gaussian3d(filtsiz,filtwidth);
 junk1=tic;
 if(Parr)  % Parrelelized filtering   
-    parfor ii=1:3
+    for ii=1:3
         %Ur(:,:,:,ii)=imfilter(Ur(:,:,:,ii),H,'symmetric');
         %Ui(:,:,:,ii)=imfilter(Ui(:,:,:,ii),H,'symmetric');
         % filtering function which does not include values outside the mask
@@ -582,19 +582,19 @@ nmsk=sum(mask(:)); %Total number of points to process
 disp('Beginning Octahedral Shear Strain Calculation')
 tinv=tic;
 
-if(Parr)
-    parfor ii=1+bufsiz:dim(1)+bufsiz   
+%if(Parr)
+    for ii=1+bufsiz:dim(1)+bufsiz   
         % The loop was too complicated for matlab's automatic parallel variable
         % classifiation, putting the loop body into a seperate function
         % solved this problem.
         [oss(ii,:,:),ons(ii,:,:),curldsp(ii,:,:,:)]=process_slice(ii,Ur,Ui,mask,ord,lf,dim,bufsiz,ntrms,res);       
     end
-else
-    for ii=1+bufsiz:dim(1)+bufsiz          
-        [oss(ii,:,:),ons(ii,:,:),curldsp(ii,:,:,:)]=process_slice(ii,Ur,Ui,mask,ord,lf,dim,bufsiz,ntrms,res);       
-    end
-
-end
+%else
+%     for ii=1+bufsiz:dim(1)+bufsiz          
+%         [oss(ii,:,:),ons(ii,:,:),curldsp(ii,:,:,:)]=process_slice(ii,Ur,Ui,mask,ord,lf,dim,bufsiz,ntrms,res);       
+%     end
+% 
+% end
 
 disp(['Octahedral Shear Strain calculation complete, ' num2str(toc(tinv)) ' seconds'])
 fprintf('\n');% New line
