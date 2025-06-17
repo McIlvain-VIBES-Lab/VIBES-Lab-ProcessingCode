@@ -102,7 +102,7 @@ while true
 end
 
 %% Section 2
-[mreParams,mask,Zmotion,Ymotion,Xmotion,t2stack,OSS_SNR] = SiemensMayoMRE_ProcessingPart2(phsimg,t2stack,mask,dx,dy,dz,freq);
+[mreParams,mask,Zmotion,Ymotion,Xmotion,t2stack,OSS_SNR] = SiemensMayoMRE_ProcessingPart2(images_phs,t2stack,mask,dx,dy,dz,freq);
 
 %% Section 3
 % clean up data

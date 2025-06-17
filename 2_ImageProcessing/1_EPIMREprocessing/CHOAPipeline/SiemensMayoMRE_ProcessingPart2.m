@@ -4,6 +4,10 @@ function [mreParams,mask,Zmotion,Ymotion,Xmotion,t2stack,OSS_SNR]= SiemensMayoMR
 % March 26th 2025
 % Grace McIlvain
 
+load maskx.mat
+
+mask = mask.*abs(1-maskx);
+
 load('imgraw_ep2d.mat') 
 
 mkdir mre_process
@@ -19,6 +23,7 @@ save mreimages.mat image
 nk = ni*nj;
 image(isnan(image))=0;
 imrs = reshape(image,[ny nx nz nk]);
+mask = mask.*abs(1-maskx);
 
 save t2mask.mat mask
 

@@ -7,7 +7,7 @@ addpath(code_path);
 addpath(common_code_path)
 startup_matlab_general
 
-dirlist = dir('Gymre*');
+dirlist = dir('*-*');
 dirlist = dirlist([dirlist.isdir]);  % keep only directories
 dirlist = dirlist(~ismember({dirlist.name}, {'.', '..'}));  % exclude . and ..
 for ii=1:length(dirlist)
@@ -104,9 +104,9 @@ end
 
         else
             fprintf(sprintf('%s NLI data not found.\n',SubjectName));
-        end
-    end
+   end
    cd ..
+end
 end
 
 % end

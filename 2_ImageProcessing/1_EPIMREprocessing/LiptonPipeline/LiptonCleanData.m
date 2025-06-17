@@ -29,7 +29,9 @@ mkdir('File_Storage')
 [~, SubjectName] = system('basename "$PWD"');
 
 SubjectName = strtrim(SubjectName); 
-addpath(SubjectName)
+disp(['SubjectName = ', SubjectName])
+
+addpath(fullfile('/Volumes/McIlvainDrive2/Lipton_Soccer_Study/SUBJECT_DATA', SubjectName))
 load('mre_for_inversion.mat')
 save(sprintf('%s.mat',SubjectName),'mreParams','mask','Zmotion','Ymotion','Xmotion','t2stack','OSS_SNR')
 UIUC_data_convert_mcilvain(SubjectName)

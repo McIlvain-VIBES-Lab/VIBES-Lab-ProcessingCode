@@ -1,33 +1,38 @@
-%% CHOA Wrapper Code
-% April 14th 2025
-% Allen Hong Grace McIlvain Teah Serani
+%% Lipton Wrapper Code
+% March 29th 2025
+% Grace McIlvain Teah Serani
 
 clear all; close all;
-
+delete(gcp('nocreate'));
 disp('Code Starting Please Wait')
 
-code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/CHOAPipeline';
-startup_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/1_StartupCode';
+code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline';
+common_code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/';
+addpath('/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/1_StartupCode');
 addpath(code_path);
-run(fullfile(startup_path, 'startup_matlab_general.m'));
+addpath(common_code_path)
+startup_matlab_general
 
+%run(fullfile(startup_path, 'startup_matlab_general.m'));
+
+% Now you can call the LiptonSoccerSetup function from anywhere
 % function added by TS March 26th 2025
 % This will rename the subject dir and pull&name T1W and Ax_Brain
 subjpath = pwd; 
-[info] = CHOASetup(subjpath);
+[info] = LiptonSoccerSetup(subjpath,code_path);
 
 % Section 1
-dx = 200/(info.Rows);
-dy = 200/(info.Columns);
-dz = dy; 
-freq =double(60); % TS: We need to check if this is actually the frequency 
+dx = (info.ReconstructionDiameter)/double(info.Height);
+dy = (info.ReconstructionDiameter)/double(info.Width);
+dz = info.SliceThickness; 
+freq =double(50); % TS: We need to check where the frequency is in the header
 
-%cd('Ax_BRAIN_MRE')
-[images_phs,t2stack] = SiemensMayoMRE_ProcessingPart1(dx,dy,dz,freq); 
+cd('Ax_BRAIN_MRE')
+[phsimg,t2stack] = GE_MRE_ProcessingPart1(dx,dy,dz,freq); 
 
 % Anatomical Scan DCM to NII
-%cd('3D_T1_MPRAGE_SAG')
-%T1_dcm2nii 
+%cd('T1W_3D_TFE')
+T1_dcm2nii 
 %cd ..
 
 
@@ -35,7 +40,7 @@ freq =double(60); % TS: We need to check if this is actually the frequency
 close all;
 load('t2mask_bet.mat')
 load('t2stack.mat')
-tmp = (t2stack.*mask)./(2000);
+tmp = (t2stack.*mask)./(8000);
 
 maskx = zeros(size(mask));
 
@@ -90,7 +95,7 @@ while true
     continue_input = input('Please enter Y if you are satisfied with your mask or N if you would like to make changes: ', 's');
     
     % If user is satisfied, break out of the while loop
-    if strcmpi(continue_input, 'Y')
+    if strcmpi(continue_input, 'Y' )
         disp('User is satisfied with the mask.');
         break;
     % If user wants to make changes, restart the slice selection process
@@ -102,30 +107,14 @@ while true
     end
 end
 
-% % look at the mask you have created (the negative mask)
-% figure;im(tmp.*mask.*abs(1-maskx));caxis([0 1])
-% 
-% start_slice = input('Enter the start slice: ');
-% end_slice = input('Enter the end slice: ');
-% 
-% 
-% disp(['Start slice: ', num2str(start_slice)]);
-% disp(['End slice: ', num2str(end_slice)]);
-% 
-% for ss = start_slice:-1:end_slice
-%     ss
-%     maskx(:,:,ss) = double(roipoly(tmp(:,:,ss)));
-% end
-% save maskx.mat maskx 
-% 
-% figure;im(tmp.*mask.*abs(1-maskx));caxis([0 1])
-% 
-% continue_input = input('Please enter Y if you are satified with your mask or N if you would like to make changes: ')
-
 %% Section 2
-[mreParams,mask,Zmotion,Ymotion,Xmotion,t2stack,OSS_SNR] = SiemensMayoMRE_ProcessingPart2(images_phs,t2stack,mask,dx,dy,dz,freq);
-
+!mkdir dcfiles
+[mreParams,mask,Zmotion,Ymotion,Xmotion,t2stack,OSS_SNR] = GE_MRE_ProcessingPart2(phsimg,t2stack,mask,dx,dy,dz,freq);
 
 %% Section 3
 % clean up data
-CHOACleanData(mreParams,mask,Zmotion,Ymotion,Xmotion,t2stack,OSS_SNR)
+LiptonCleanData(mreParams,mask,Zmotion,Ymotion,Xmotion,t2stack,OSS_SNR)
+
+%% Section 4
+disp("Running Freesurfer on Insomnia")
+system(['sh /Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline/freesurfer_insomnia.sh']);
