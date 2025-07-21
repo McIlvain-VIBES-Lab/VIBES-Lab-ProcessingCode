@@ -1,14 +1,13 @@
 %% Lipton Wrapper Code
 % March 29th 2025
-% Grace McIlvain Teah Serani
+% Grace McIlvain Teah Serani Allen Hong
 
 clear all; close all;
-
+delete(gcp('nocreate'));
 disp('Code Starting Please Wait')
 
 code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline';
 common_code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/';
-startup_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/1_StartupCode';
 addpath('/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/1_StartupCode');
 addpath(code_path);
 addpath(common_code_path)
@@ -106,31 +105,8 @@ while true
         disp('Invalid input. Please enter Y or N.');
     end
 end
-
-% % look at the mask you have created (the negative mask)
-% figure;im(tmp.*mask.*abs(1-maskx));caxis([0 1])
-% 
-% start_slice = input('Enter the start slice: ');
-% end_slice = input('Enter the end slice: ');
-% 
-% 
-% disp(['Start slice: ', num2str(start_slice)]);
-% disp(['End slice: ', num2str(end_slice)]);
-% 
-% for ss = start_slice:-1:end_slice
-%     ss
-%     maskx(:,:,ss) = double(roipoly(tmp(:,:,ss)));
-% end
-% save maskx.mat maskx 
-% 
-% figure;im(tmp.*mask.*abs(1-maskx));caxis([0 1])
-% 
-% continue_input = input('Please enter Y if you are satified with your mask or N if you would like to make changes: ')
-
 %% Section 2
 [mreParams,mask,Zmotion,Ymotion,Xmotion,t2stack,OSS_SNR] = GE_MRE_ProcessingPart2(phsimg,t2stack,mask,dx,dy,dz,freq);
-
-
 %% Section 3
 % clean up data
 LiptonCleanData(mreParams,mask,Zmotion,Ymotion,Xmotion,t2stack,OSS_SNR)

@@ -52,7 +52,7 @@ else
 end
 pwd
 %% Find mtr.0001 to postprocess
-
+!rm ._*
 f0001=dir('*RE..0001.prop.01.mtr');
 for ii=1:length(f0001)
     disp(['Convergence postprocessing : ' f0001(ii).name])

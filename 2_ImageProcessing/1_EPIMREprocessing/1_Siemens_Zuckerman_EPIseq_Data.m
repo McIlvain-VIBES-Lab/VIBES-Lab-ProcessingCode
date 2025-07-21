@@ -1,17 +1,22 @@
-cd('MRE_3D_AX_ON_AXIS_Mag')
- !/Applications/MRIcron/dcm2niix * 
-            !gunzip -f *.nii.gz
-            !mv *.nii mag.nii
-            !cp mag.nii ../mag.nii
-            cd ..
-cd('MRE_3D_AX_ON_AXIS_P_P')
- !/Applications/MRIcron/dcm2niix * 
-            !gunzip -f *.nii.gz
-            !mv *.nii phs.nii
-            !cp phs.nii ../phs.nii
-            cd ..
-
-
+%% Start-Up
+code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline';
+common_code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/';
+addpath('/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/1_StartupCode');
+addpath(code_path);
+addpath(common_code_path)
+startup_matlab_general
+% cd('MRE_3D_AX_ON_AXIS_Mag')
+%  !/Applications/MRIcron/dcm2niix * 
+%             !gunzip -f *.nii.gz
+%             !mv *.nii mag.nii
+%             !cp mag.nii ../mag.nii
+%             cd ..
+% cd('MRE_3D_AX_ON_AXIS_P_P')
+%  !/Applications/MRIcron/dcm2niix * 
+%             !gunzip -f *.nii.gz
+%             !mv *.nii phs.nii
+%             !cp phs.nii ../phs.nii
+%             cd ..
  % cd('T1W_3D_TFE')
  % !/Applications/MRIcron/dcm2nii * -4fn
  %            !gunzip -f *.nii.gz
@@ -28,6 +33,7 @@ cd('MRE_3D_AX_ON_AXIS_P_P')
 
 mag_nii = load_untouch_nii('mag.nii');
 phs_nii = load_untouch_nii('phs.nii');
+
 magimg = mag_nii.img;
 phsimg = phs_nii.img;
 
@@ -95,7 +101,7 @@ figure;im(tmp);caxis([0 1])
 figure;im(tmp.*mask.*abs(1-maskx));caxis([0 1])
 
 
-for ss = 22:-1:19
+for ss = 19:-1:1
     ss
     maskx(:,:,ss) = double(roipoly(tmp(:,:,ss)));
 end
@@ -191,6 +197,29 @@ mkdir('File_Storage')
 
 !mv mreimages_unwrap.mat File_Storage/
 !mv t2mask_bet.mat File_Storage/
+%% Copy To NLI Folder
+[~, SubjectName] = system('basename "$PWD"');
+
+SubjectName = strtrim(SubjectName); 
+disp(['SubjectName = ', SubjectName])
+
+addpath(fullfile('/Volumes/McIlvainDrive2/Lipton_Soccer_Study/SUBJECT_DATA', SubjectName))
+load('mre_for_inversion.mat')
+save(sprintf('%s.mat',SubjectName),'mreParams','mask','Zmotion','Ymotion','Xmotion','t2stack','OSS_SNR')
+UIUC_data_convert_mcilvain(SubjectName)
+cd(sprintf('%s',SubjectName))
+MRE_preprocess_v9_mcilvain('default',SubjectName)
+eval(sprintf('!mv %s.mat %s/',SubjectName,SubjectName))
+cd ..
+%eval(sprintf('!mv %s.mat /Volumes/McIlvainDrive2/Send_to_NLI',SubjectName))
+%eval(sprintf('!mv %s /Volumes/McIlvainDrive2/Send_to_NLI',SubjectName))
+
+% Ready for Testing (in liu of lines 34 and 35):
+system(sprintf('scp -r %s gm3128@insomnia.rcs.columbia.edu:/insomnia001/depts/mcilvain/users/mcilvain/',SubjectName)); 
+pause(20)
+insomniapath = ['/insomnia001/depts/mcilvain/users/mcilvain/', SubjectName, '/hex/', SubjectName, '_voxelmesh'];
+system(sprintf('ssh gm3128@insomnia.rcs.columbia.edu "cd /%s/ && sbatch McIlvain-Submitv9_visc_incomp"',insomniapath))
+
 %% 
 figure; im(real(Xmotion)); colormap(wave_color);
 saveas (gcf,'BABA_6p_X.png')

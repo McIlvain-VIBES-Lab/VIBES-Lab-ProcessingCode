@@ -16,9 +16,9 @@ for ii=1:length(dirlist)
     
     
    if ~exist('NLI_Outputs','dir') %GM 
-% remotePath = sprintf('/insomnia001/depts/mcilvain/users/mcilvain/%s/hex', SubjectName);
+remotePath = sprintf('/insomnia001/depts/mcilvain/users/mcilvain/%s/hex', SubjectName);
 insomniapath = ['/insomnia001/depts/mcilvain/users/mcilvain/', SubjectName, '/hex/', SubjectName, '_voxelmesh'];
-%system(sprintf('ssh gm3128@insomnia.rcs.columbia.edu "cd /%s/ && sbatch McIlvain-Submitv9_visc_incomp"',insomniapath))
+system(sprintf('ssh gm3128@insomnia.rcs.columbia.edu "cd /%s/ && sbatch McIlvain-Submitv9_visc_incomp"',insomniapath))
 
 filePattern = '*0100.prop*';
 checkCmd = sprintf('ssh gm3128@insomnia.rcs.columbia.edu "ls %s/inv/%s > /dev/null 2>&1"', insomniapath, filePattern);
@@ -51,7 +51,7 @@ Mu = 2*(AbsShear.^2)./(RealShear+AbsShear);
 save ComplexShear.mat ComplexShear
 save AbsShear.mat AbsShear
 save Mu.mat Mu
-figure;im(Mu(:,:,:)); caxis([0 6000]); colorbar; colormap(gca,stiff_color);
+figure;im(Mu(:,:,:)); caxis([0 7000]); colorbar; colormap(gca,stiff_color);
 print('-dpng','-r300',sprintf('Mu_%s',dirlist(ii).name(1:end)))
 end
 

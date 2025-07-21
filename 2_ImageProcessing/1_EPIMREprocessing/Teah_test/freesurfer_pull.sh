@@ -23,7 +23,7 @@ for dir in "${dirs[@]}"; do
 
     remote_dir="$remote_path/$dir"
 
-    check=$(ssh -T ts3641@insomnia.rcs.columbia.edu bash <<EOF
+    check=$(ssh -T gm3128@insomnia.rcs.columbia.edu bash <<EOF
         if [ -d "$remote_dir" ]; then
             if [ -f "$remote_dir/scripts/recon-all.done" ] && [ ! -f "$remote_dir/scripts/recon-all.error" ]; then
                 echo 1
@@ -44,10 +44,10 @@ EOF
 
     if [ "$check" == "1" ]; then
         echo "$dir: Completed without errors. Transferring Outputs"
-        scp -r ts3641@insomnia.rcs.columbia.edu:"$remote_dir" "$local_path/$dir/FreeSurferOutput"
+        scp -r gm3128@insomnia.rcs.columbia.edu:"$remote_dir" "$local_path/$dir/FreeSurferOutput"
     elif [ "$check" == "2" ]; then
         echo "$dir: Completed with errors. Transferring Error File"
-        scp -r ts3641@insomnia.rcs.columbia.edu:"$remote_dir/scripts/recon-all.error" "$local_path/$dir/FreeSurfer.error"
+        scp -r gm3128@insomnia.rcs.columbia.edu:"$remote_dir/scripts/recon-all.error" "$local_path/$dir/FreeSurfer.error"
     elif [ "$check" == "3" ]; then
         echo "$dir: Rerunning Recon-all"
     elif [ "$check" == "0" ]; then

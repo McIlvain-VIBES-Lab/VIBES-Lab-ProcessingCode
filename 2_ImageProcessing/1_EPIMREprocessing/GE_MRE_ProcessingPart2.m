@@ -66,6 +66,6 @@ save(sprintf('%s.mat',mreParams.subj),'mreParams','mask','Zmotion','Ymotion','Xm
 % mkdir(sprintf('%s_Caviness',date))
 % cd(sprintf('%s_Caviness',date))
 % save(sprintf('%s.mat',mreParams.subj),'mreParams','mask','Zmotion','Ymotion','Xmotion','t2stack','OSS_SNR')
-cd ..
+% cd ..
 
 end 

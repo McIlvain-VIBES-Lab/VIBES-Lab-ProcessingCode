@@ -1,0 +1,153 @@
+function JafarCheckForNLIOutputs
+
+code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline';
+common_code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/';
+addpath('/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/1_StartupCode');
+addpath(code_path);
+addpath(common_code_path)
+startup_matlab_general
+!rm ._*
+dirlist = dir('*CER*');
+dirlist = dirlist([dirlist.isdir]);  % keep only directories
+dirlist = dirlist(~ismember({dirlist.name}, {'.', '..'}));  % exclude . and ..
+for ii=1:length(dirlist)
+    
+ %   cd(dirlist(ii).name)
+    SubjectName = sprintf('%s',dirlist(ii).name);
+    
+    
+ %  if ~exist('NLI_Outputs','dir') %GM 
+% remotePath = sprintf('/insomnia001/depts/mcilvain/users/mcilvain/%s/hex', SubjectName);
+insomniapath = ['/insomnia001/depts/mcilvain/users/mcilvain/', SubjectName, '/hex/', SubjectName, '_voxelmesh'];
+%system(sprintf('ssh gm3128@insomnia.rcs.columbia.edu "cd /%s/ && sbatch McIlvain-Submitv9_visc_incomp"',insomniapath))
+
+%cd(sprintf('/insomnia001/depts/mcilvain/users/mcilvain/%s/hex/%s_voxelmesh',SubjectName,SubjectName));
+
+filePattern = '*0100.prop*';
+checkCmd = sprintf('ssh gm3128@insomnia.rcs.columbia.edu "ls %s/inv/%s > /dev/null 2>&1"', insomniapath, filePattern);
+[status, result] = system(checkCmd);
+
+if status == 0
+system(sprintf('scp -r gm3128@insomnia.rcs.columbia.edu:/insomnia001/depts/mcilvain/users/mcilvain/%s .', SubjectName));
+cd(SubjectName)
+!rm ._*
+cd hex
+!rm ._*
+cd(sprintf('%s_voxelmesh',SubjectName));
+!rm ._*
+cd inv
+!rm ._*
+cd ../../../
+MRE_v9_process_folder
+
+cd hex;
+dir2 = dir('*voxelmesh');
+cd(dir2.name);
+cd inv;
+!rm ._*
+dir2 = dir('*avlast08..0100.Re*.mat');
+load(dir2(1).name);
+cd ../../../
+Rx = double(abs(RealShear-3300)<0.0001);
+Rxm = abs(1-Rx);
+RealShear = RealShear.*Rxm;
+ImagShear = ImagShear.*Rxm;
+DR = DR.*Rxm;
+save RealShear.mat RealShear
+save ImagShear.mat ImagShear
+save DR.mat DR
+
+ComplexShear = RealShear + (i*ImagShear);
+AbsShear = sqrt(((RealShear.^2)+(ImagShear.^2)));
+Mu = 2*(AbsShear.^2)./(RealShear+AbsShear);
+save ComplexShear.mat ComplexShear
+save AbsShear.mat AbsShear
+save Mu.mat Mu
+figure;im(Mu(:,:,:)); caxis([0 20000]); colorbar; colormap(gca,stiff_color);
+print('-dpng','-r300',sprintf('Mu_%s',dirlist(ii).name(1:end)))
+end
+
+        cd ..
+
+invparam.VHregularization_level = [1.20000000000000];
+invparam.SPactive = [0           0           0];
+Mtr file CERSTEM_0001_6p_01_voxelmesh_G3300.v9.hex.inv.iso.incomp.visc_SPoff_SF0p0015_CG2p2avlast08.RE..0100.prop.01.mtr
+
+ans =
+
+     0
+
+Loading HeaderData.mat and MRE3DMotionData.mat File:
+Inversion Parameters stored in invparam structure
+invparam.version_number = [9.370];
+invparam.nodes_per_disp_elm = [27];
+invparam.modeltype = [1];
+invparam.freq_rads_inv = [3.1415926536E+02];
+invparam.numbermaterialprops = [3];
+invparam.basistype = [1           1           1];
+invparam.propertyscalars_real = [3.3000000000E+03  1.0000000000E+03  1.6489000000E+06];
+invparam.propertyscalars_imag = [1.1880000000E+03 -1.0000000000E-01  1.0000000000E-04];
+invparam.zonedispbcopt = [1];
+invparam.zonesize = [1.956330000000000E-002  1.956330000000000E-002  1.956330000000000E-002];
+invparam.zoneovlp = [0.150000000000000       0.150000000000000       0.150000000000000];
+invparam.numberpropertyresolutions = [2];
+invparam.meshresolutions_x = [1.875000000000000E-003  1.875000000000000E-002];
+invparam.meshresolutions_y = [1.875000000000000E-003  1.875000000000000E-002];
+invparam.meshresolutions_z = [2.500000000000000E-003  2.500000000000000E-002];
+invparam.propertyresolutionreal_x = [1.8750000000E-03  1.8750000000E-02  1.8750000000E-02];
+invparam.propertyresolutionimag_x = [1.8750000000E-03  1.8750000000E-02  1.8750000000E-02];
+invparam.propertyresolutionreal_y = [1.8750000000E-03  1.8750000000E-02  1.8750000000E-02];
+invparam.propertyresolutionimag_y = [1.8750000000E-03  1.8750000000E-02  1.8750000000E-02];
+invparam.propertyresolutionreal_z = [2.5000000000E-03  2.5000000000E-02  2.5000000000E-02];
+invparam.propertyresolutionimag_z = [2.5000000000E-03  2.5000000000E-02  2.5000000000E-02];
+invparam.proprecon_real = [1           0           0];
+invparam.proprecon_imag = [1           0           0];
+invparam.maxglobaliterations = [100];
+invparam.maxzoneiterations = [1];
+invparam.numberiterationstructs = [3];
+invparam.iterationstruct1 = [1    0    0    1];
+invparam.iterationstruct2 = [2    0    0    2];
+invparam.iterationstruct3 = [3    0    0    2];
+invparam.zoneiterstructlims = [10         150];
+invparam.regconstitr = [30];
+invparam.TVactive = [0           0           0];
+invparam.SFactive = [1           1           1];
+invparam.SFweightstart_real = [3.0000000000E-03  3.0000000000E-03  3.0000000000E-03];
+invparam.SFweightstart_imag = [3.0000000000E-03  3.0000000000E-03  3.0000000000E-03];
+invparam.SFweightfinish_real = [1.5000000000E-03  1.5000000000E-03  1.5000000000E-03];
+invparam.SFweightfinish_imag = [1.5000000000E-03  1.5000000000E-03  1.5000000000E-03];
+invparam.TKactive = [0           0           0];
+invparam.SPactive = [0           0           0];
+invparam.MQactive = [0           0           0];
+invparam.JWactive = [0           0           0];
+invparam.Constraintactive = [0           0           0];
+invparam.CGresidualscale_active = [1];
+invparam.CGresidualscale_startweight_real = [4.0000000000E-02  4.0000000000E-02  4.0000000000E-02];
+invparam.CGresidualscale_startweight_imag = [4.0000000000E-02  4.0000000000E-02  4.0000000000E-02];
+invparam.CGresidualscale_finishweight_real = [1.0000000000E-02  1.0000000000E-02  1.0000000000E-02];
+invparam.CGresidualscale_finishweight_imag = [1.0000000000E-02  1.0000000000E-02  1.0000000000E-02];
+invparam.McGactive = [1           1           1];
+invparam.parameterboundmin_real = [2.0000000000E+02  1.0000000000E+03  1.0000000000E+03];
+invparam.parameterboundmin_imag = [1.0000000000E+00 -5.0000000000E+04  0.0000000000E+00];
+invparam.parameterboundmax_real = [5.0000000000E+05  1.0000000000E+03  1.0000000000E+12];
+invparam.parameterboundmax_imag = [5.0000000000E+05 -1.0000000000E-02  1.0000000000E-04];
+invparam.VHregularization_active = [1];
+invparam.VHregularization_level = [1.20000000000000];
+invparam.SPactive = [0           0           0];
+zsh:1: no matches found: ._*
+Warning: image contains 611880 NaN values of 786432!? 
+> In im (line 273)
+In JafarCheckForNLIOutputs (line 66) 
+scp: mkdir ./CERSTEM_0001_9p: Read-only file system
+
+Error using cd
+Unable to change current folder to '/CERSTEM_0001_9p' (Name is nonexistent or not a folder).
+
+Error in J
+   
+%   end
+   cd ..
+end
+end
+
+% end
