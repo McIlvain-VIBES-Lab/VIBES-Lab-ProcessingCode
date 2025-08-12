@@ -1,4 +1,5 @@
 function [phsimg,t2stack] = GE_MRE_ProcessingPart1(dx,dy,dz,freq)
+
 %% Section 1 of the MRE Processing Code
 % GE_MRE_Processing Part 1
 % March 26th 2025
@@ -69,6 +70,9 @@ magimg(:,:,:,2,:)=((abs(e3)+abs(e4))/max(col(abs(e3)+abs(e4))))*30000;
 phsimg(:,:,:,1,:)=angle(e5./e6);
 magimg(:,:,:,1,:)=((abs(e5)+abs(e6))/max(col(abs(e5)+abs(e6))))*30000;
 
+save magimg magimg
+
+%%
 % GM build in distortion correction
 %GE_MRE_DistortionCorrection
 %end

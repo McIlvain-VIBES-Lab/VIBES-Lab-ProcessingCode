@@ -7,7 +7,7 @@ addpath(code_path);
 addpath(common_code_path)
 startup_matlab_general
 !rm ._*
-dirlist = dir('Brains*');
+dirlist = dir('Ax*');
 dirlist = dirlist([dirlist.isdir]);  % keep only directories
 dirlist = dirlist(~ismember({dirlist.name}, {'.', '..'}));  % exclude . and ..
 for ii=1:length(dirlist)
@@ -63,7 +63,7 @@ Mu = 2*(AbsShear.^2)./(RealShear+AbsShear);
 save ComplexShear.mat ComplexShear
 save AbsShear.mat AbsShear
 save Mu.mat Mu
-figure;im(Mu(:,:,:)); caxis([0 100000]); colorbar; colormap(gca,stiff_color);
+figure;im(Mu(:,:,:)); caxis([0 30000]); colorbar; colormap(gca,stiff_color);
 print('-dpng','-r300',sprintf('Mu_%s',dirlist(ii).name(1:end)))
 end
 
@@ -74,6 +74,6 @@ end
 %   end
    cd ..
 end
-end
+
 
 % end

@@ -35,7 +35,6 @@ cd('Ax_BRAIN_MRE')
 T1_dcm2nii 
 %cd ..
 
-
 %% Manual Masking (Human Brain)
 close all;
 load('t2mask_bet.mat')
@@ -47,6 +46,7 @@ maskx = zeros(size(mask));
 % look at the whole brain
 figure;im(tmp);caxis([0 1])
 while true
+%% 
     % Display the figure to allow user to view the mask and slices
     figure;
     im(tmp .* mask .* abs(1 - maskx)); 
