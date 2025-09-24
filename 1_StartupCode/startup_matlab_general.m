@@ -1,5 +1,5 @@
 % setenv( 'FSLDIR', '/Users/student/fsl' ); % Setting environment variable allen change
-setenv( 'FSLDIR', '/Users/studio1/fsl' ); % Setting environment variable
+setenv( 'FSLDIR', '/Users/vibes_1/fsl' ); % Setting environment variable
 %setenv( 'FSLDIR', '/Users/studio1/fsl' ); % Setting environment variable
 setenv( 'FSLOUTPUTTYPE', 'NIFTI_GZ' ); % Setting environment variable
 fsldir = getenv('FSLDIR'); % gets environment of '/usr/local/fsl', since we have assigned FSLDIR to this value, and assigns it to variable 'fsldir'

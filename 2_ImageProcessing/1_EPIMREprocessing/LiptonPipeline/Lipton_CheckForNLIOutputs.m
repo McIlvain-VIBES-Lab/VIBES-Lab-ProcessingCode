@@ -11,20 +11,23 @@ dirlist = dirlist([dirlist.isdir]);  % keep only directories
 dirlist = dirlist(~ismember({dirlist.name}, {'.', '..'}));  % exclude . and ..
 for ii=1:length(dirlist)
     cd(dirlist(ii).name)
-    SubjectName = sprintf('%s',dirlist(ii).name);
-
+    SubjectName = sprintf('%s',dirlist(ii).name)
+    pwd
 
     if  ~exist('NLI_Outputs','dir')
+        
         % remotePath = sprintf('/insomnia001/depts/mcilvain/users/mcilvain/%s/hex', SubjectName);
         insomniapath = ['/insomnia001/depts/mcilvain/users/mcilvain/', SubjectName, '/hex/', SubjectName, '_voxelmesh'];
         %system(sprintf('ssh gm3128@insomnia.rcs.columbia.edu "cd /%s/ && sbatch McIlvain-Submitv9_visc_incomp"',insomniapath))
 
         filePattern = '*0100.prop*';
-        checkCmd = sprintf('ssh gm3128@insomnia.rcs.columbia.edu "ls %s/inv/%s > /dev/null 2>&1"', insomniapath, filePattern);
+        %checkCmd = sprintf('ssh gm3128@insomnia.rcs.columbia.edu "ls %s/inv/%s > /dev/null 2>&1"', insomniapath, filePattern);
+        checkCmd = sprintf('ssh ts3641@insomnia.rcs.columbia.edu "ls %s/inv/%s > /dev/null 2>&1"', insomniapath, filePattern);
         [status, result] = system(checkCmd);
 
         if status == 0
-            system(sprintf('scp -r gm3128@insomnia.rcs.columbia.edu:/insomnia001/depts/mcilvain/users/mcilvain/%s .', SubjectName));
+            %system(sprintf('scp -r gm3128@insomnia.rcs.columbia.edu:/insomnia001/depts/mcilvain/users/mcilvain/%s .', SubjectName));
+            system(sprintf('scp -r ts3641@insomnia.rcs.columbia.edu:/insomnia001/depts/mcilvain/users/mcilvain/%s .', SubjectName));
             cd(SubjectName)
             MRE_v9_process_folder
 
@@ -54,8 +57,10 @@ for ii=1:length(dirlist)
             print('-dpng','-r300',sprintf('Mu_%s',dirlist(ii).name(1:end)))
         end
 
-        cd ..
-        pwd
+        %cd ..
+        
+        pwd %UNCOMMENT HERE
+
         % mkdir('nli_outputs')
         % save nli_outputs/Mu.mat Mu
         % save nli_outputs/DR.mat DR

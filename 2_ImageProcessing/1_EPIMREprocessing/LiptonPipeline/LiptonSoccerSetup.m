@@ -57,7 +57,7 @@ for i = 1:length(dir_list)
         end
     end
 
-    if dir_list(i).isdir && startsWith(dir_list(i).name, 'QSM')
+    if dir_list(i).isdir && startsWith(dir_list(i).name, '103_3D_Ax_QSM')
         try
             movefile(dir_list(i).name, ['..' filesep 'QSM']);
         catch ME

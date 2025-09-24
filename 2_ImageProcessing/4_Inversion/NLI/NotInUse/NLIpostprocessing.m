@@ -3,7 +3,7 @@
 %   Use this script to clean up data after you pull it back down from NLI
 %   You must be in the folder Date-Caviness to run this
 
-dir1=dir('NLI*'); %you will have to change the name here to the first part of the folder name you created
+dir1=dir('U*'); %you will have to change the name here to the first part of the folder name you created
 addpath(pwd)
 
 for ii =1:2:length(dir1)

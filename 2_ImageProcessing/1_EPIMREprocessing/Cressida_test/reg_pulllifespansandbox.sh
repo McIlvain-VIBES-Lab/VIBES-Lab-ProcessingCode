@@ -1,7 +1,12 @@
 #!/bin/bash
 
 # Local base path
-local_path="/Volumes/McIlvainDrive2/Lipton_Soccer_Study/SUBJECT_DATA"
+if [[$1 == "/Volumes/McIlvainDrive2/Lipton_Lifespan/SUBJECT_DATA"]]; then
+local_path=$1
+elif [[$1 == "/Volumes/McIlvainDrive2/Lipton_Soccer_Study/SUBJECT_DATA"]]; then
+local_path=$1
+else
+    echo "You have not provided an acceptable working directory to serve as the local path. Please choose either /Volumes/McIlvainDrive2/Lipton_Soccer_Study/SUBJECT_DATA or /Volumes/McIlvainDrive2/Lipton_Lifespan/SUBJECT_DATA."
 
 # Remote base path
 remote_path="/insomnia001/depts/mcilvain/users/mcilvain/Registrations"

@@ -3,7 +3,7 @@
 %   Use this script to clean up data after you pull it back down from NLI
 %   You must be in the folder Date-Caviness to run this
 
-dir1=dir('*'); %you will have to change the name here to the first part of the folder name you created
+dir1=dir('U*.mat'); %you will have to change the name here to the first part of the folder name you created
 addpath(pwd)
 
 for ii =1:length(dir1)
@@ -42,13 +42,17 @@ for ii =1:length(dir1)
         save nli_outputs/Mask.mat    
        
         figure;im(Mu(:,:,:)); caxis([0 6000]); colorbar; colormap(gca,stiff_color);
+        
         print('-dpng','-r300',sprintf('Mu_%s',dir1(ii).name(1:end-4)))
         print('-dpng','-r300',sprintf('nli_outputs/Mu_%s',dir1(ii).name(1:end-4)))
-
-
+        figure;im(DR(:,:,:)); caxis([0 0.5]);colorbar;colormap(gca,'hot')
+        print('-dpng','-r300',sprintf('DR_%s',dir1(ii).name(1:end-4)))
     cd ..
-            print('-dpng','-r300',sprintf('Mu_%s',dir1(ii).name(1:end-4)))
+            figure;im(Mu(:,:,:)); caxis([0 6000]); colorbar; colormap(gca,stiff_color);
 
+            print('-dpng','-r300',sprintf('Mu_%s',dir1(ii).name(1:end-4)))
+ figure;im(DR(:,:,:)); caxis([0 0.5]);colorbar;colormap(gca,'hot')
+        print('-dpng','-r300',sprintf('DR_%s',dir1(ii).name(1:end-4)))
     end
 end
 

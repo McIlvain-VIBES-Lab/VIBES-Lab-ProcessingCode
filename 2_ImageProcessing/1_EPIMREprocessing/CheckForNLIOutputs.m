@@ -7,7 +7,7 @@ addpath(code_path);
 addpath(common_code_path)
 startup_matlab_general
 
-dirlist = dir('*R*');
+dirlist = dir('*NIMS*');
 dirlist = dirlist([dirlist.isdir]);  % keep only directories
 dirlist = dirlist(~ismember({dirlist.name}, {'.', '..'}));  % exclude . and ..
 for ii=1:length(dirlist)

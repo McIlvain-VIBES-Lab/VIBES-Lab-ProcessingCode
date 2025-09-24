@@ -2,7 +2,7 @@
 
 pwd
 subj_dir=$(pwd)
-mkdir Registrations
+#mkdir Registrations
 subj_id=$(basename "$subj_dir")
 
 fs_dir="/insomnia001/depts/mcilvain/users/mcilvain/Registrations/$subj_id"

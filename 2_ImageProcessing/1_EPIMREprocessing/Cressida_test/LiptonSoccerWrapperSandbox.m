@@ -121,5 +121,5 @@ disp("Running Freesurfer on Insomnia")
 system(['sh /Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline/freesurfer_insomnia.sh']);
 
 %% Section 5
-disp("Running Registerations on Insomnia")
+disp("Running Registrations on Insomnia")
 system(['sh /Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline/reg_insomnia.sh'])

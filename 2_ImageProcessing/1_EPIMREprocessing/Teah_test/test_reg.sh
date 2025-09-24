@@ -64,7 +64,6 @@ for subject in $new_subjects; do
     mksubject -p "$local_path/$subject"
     mv "$src" "$dest"
 
-    echo "converting .lta files to .mat files"
     lta_convert \
           --inlta $local_path/$subject/Registrations/aff_t1_to_t2.lta \
           --outfsl $local_path/$subject/Registrations/aff_t1_to_t2.mat \

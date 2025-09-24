@@ -82,7 +82,7 @@ t2nii = make_nii(t2stack,[dy dx dz]);
 save_nii(t2nii,'t2stack.nii')
 
 %!$FSLDIR/bin/bet2 t2stack.nii t2bet.nii -m -v -f 0.25 -w 1.1
-!$FSLDIR/bin/bet2 t2stack.nii t2bet.nii -m -v -f 0.25 -w 1.1
+!$FSLDIR/bin/bet2 t2stack.nii t2bet.nii -m -v -f 0.3 -w 1.1
 !gunzip -f t2bet.nii_mask.nii.gz
 !gunzip -f t2bet.nii.gz
 !cp t2bet.nii_mask.nii t2mask.nii

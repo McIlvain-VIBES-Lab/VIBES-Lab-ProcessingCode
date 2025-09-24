@@ -51,7 +51,7 @@ mkdir('Archive');
 mkdir('Test_Dev');
 
 disp('Changing Subject Folder Name')
-dir1 = dir('Ax_BRAIN_MRE/*.dcm');
+dir1 = dir('Ax_BRAIN_MRE/*dcm');
 info = dicominfo(fullfile('Ax_BRAIN_MRE', dir1(1).name));
 new_folder = fullfile(expected_root, info.PatientID);
 movefile(current_path, new_folder);

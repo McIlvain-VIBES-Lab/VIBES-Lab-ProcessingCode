@@ -134,3 +134,8 @@ end
 %% Section 3
 % clean up data
 LiptonCleanData(mreParams,mask,Zmotion,Ymotion,Xmotion,t2stack,OSS_SNR)
+
+
+%% Section 4
+disp("Running Freesurfer on Insomnia")
+system(['sh /Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline/freesurfer_insomnia.sh']);

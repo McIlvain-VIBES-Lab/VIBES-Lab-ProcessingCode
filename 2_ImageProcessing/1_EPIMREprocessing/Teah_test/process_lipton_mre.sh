@@ -1,5 +1,5 @@
 #!/bin/bash
-export FSLDIR=/Users/comsol2/fsl
+export FSLDIR=/Users/vibes_1/fsl
 source $FSLDIR/etc/fslconf/fsl.sh
 
 fslorient -setqformcode 1 "$1"

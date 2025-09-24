@@ -97,7 +97,7 @@ save_nii(t2nii,'t2stack.nii')
 !rm t2bet.nii_mask.nii
 
 tmp = load_nii('t2mask.nii');
-seD1 = strel('diamond',0); 
+seD1 = strel('diamond',1); 
 %imerode gets ride of the extra one bad voxel at the edge
 mask = imerode(double(permute(flip(flip(tmp.img,1),2),[2 1 3])),seD1);
 save t2mask_bet.mat mask
@@ -124,7 +124,7 @@ figure;im(tmp);caxis([0 1])
 figure;im(tmp.*mask.*abs(1-maskx));caxis([0 1])
 
 
-for ss = 2:-1:1
+for ss = 49:-1:1
     ss
     maskx(:,:,ss) = double(roipoly(tmp(:,:,ss)));
 end

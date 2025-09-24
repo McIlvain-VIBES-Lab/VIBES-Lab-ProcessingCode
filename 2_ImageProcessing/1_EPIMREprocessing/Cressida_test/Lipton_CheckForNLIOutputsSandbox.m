@@ -6,7 +6,7 @@ addpath(code_path);
 addpath(common_code_path)
 startup_matlab_general
 
-dirlist = dir('Gymre04*');
+dirlist = dir('*-*');
 dirlist = dirlist([dirlist.isdir]);  % keep only directories
 dirlist = dirlist(~ismember({dirlist.name}, {'.', '..'}));  % exclude . and ..
 for ii=1:length(dirlist)
@@ -50,7 +50,7 @@ for ii=1:length(dirlist)
             save ComplexShear.mat ComplexShear
             save AbsShear.mat AbsShear
             save Mu.mat Mu
-            figure;im(Mu(:,:,:)); caxis([0 7000]); colorbar; colormap(gca,stiff_color);
+            figure;im(Mu(:,:,:)); caxis([0 6000]); colorbar; colormap(gca,stiff_color);
             print('-dpng','-r300',sprintf('Mu_%s',dirlist(ii).name(1:end)))
         end
 
@@ -106,7 +106,7 @@ for ii=1:length(dirlist)
         fprintf(sprintf('%s NLI data not found.\n',SubjectName));
     end
     cd ..
-end
+   
 end
 
 % end

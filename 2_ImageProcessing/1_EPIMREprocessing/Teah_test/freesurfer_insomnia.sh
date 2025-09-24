@@ -6,14 +6,16 @@ subj_id=$(basename $(pwd))
 
 # Define the file system directory on the remote server
 fs_dir="ts3641@insomnia.rcs.columbia.edu:/insomnia001/depts/mcilvain/users/mcilvain/FreeSurferOutputs"
+#fs_dir="gm3128@insomnia.rcs.columbia.edu:/insomnia001/depts/mcilvain/users/mcilvain/FreeSurferOutputs"
 
 # Check if the 'coT1W_3D_TFE.nii' file exists
 if [ -f "$subj_dir/coT1W_3D_TFE.nii" ]; then
     # Copy the file to the remote server
-    scp "$subj_dir/coT1W_3D_TFE.nii" $fs_dir/$subj_id.nii
+    rsync -avz "$subj_dir/coT1W_3D_TFE.nii" $fs_dir/$subj_id.nii
     
     # SSH into the server and submit the job
     ssh ts3641@insomnia.rcs.columbia.edu <<EOF
+    #ssh gm3128@insomnia.rcs.columbia.edu <<EOF
     cd /insomnia001/depts/mcilvain/users/mcilvain/FreeSurferOutputs
     sbatch lipton_fs.sh $subj_id.nii
 EOF
@@ -21,10 +23,11 @@ EOF
 # Check if the 'T1W_3D_TFE.nii' file exists
 elif [ -f "$subj_dir/T1W_3D_TFE.nii" ]; then
     # Copy the file to the remote server
-    scp "$subj_dir/T1W_3D_TFE.nii" $fs_dir/$subj_id.nii
+    rsync -avz "$subj_dir/T1W_3D_TFE.nii" $fs_dir/$subj_id.nii
     
     # SSH into the server and submit the job
     ssh ts3641@insomnia.rcs.columbia.edu <<EOF
+    #ssh gm3128@insomnia.rcs.columbia.edu <<EOF
     cd /insomnia001/depts/mcilvain/users/mcilvain/FreeSurferOutputs
     sbatch lipton_fs.sh $subj_id.nii
 EOF

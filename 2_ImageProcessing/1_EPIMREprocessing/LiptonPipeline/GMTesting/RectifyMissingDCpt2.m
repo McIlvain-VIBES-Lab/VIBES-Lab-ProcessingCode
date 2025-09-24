@@ -1,0 +1,75 @@
+dirlist = dir('2023*')
+for jj=83:102
+cd(dirlist(jj).name)
+cd('File_Storage')
+cd('QSM')
+%clear all
+!/Applications/MRIcron/dcm2niix *
+%%
+seriesDir = pwd;
+files     = dir(fullfile(seriesDir,'IM-*.dcm'));
+TE   = zeros(numel(files),1);
+echo = zeros(numel(files),1);
+for k = 1:numel(files)
+info      = dicominfo(fullfile(seriesDir,files(k).name));
+TE(k)     = info.EchoTime;      % ms
+echo(k)   = info.EchoNumbers;   % echo index
+end
+[~,idx] = sort(echo);
+uniqueTEs = unique(TE(idx),'stable');   % preserves echo ordering
+writematrix(uniqueTEs,'TEs.txt');% one TE per line
+uniqueTEs = double(uniqueTEs);
+save uniqueTEs uniqueTEs
+%%
+dir_real = dir('*QSM*_e*_real.nii')
+for ii = 1:length(dir_real)
+tmp = load_nii(dir_real(ii).name)
+real_all(:,:,:,ii)=tmp.img;
+end
+dir_imag = dir('*QSM*_e*_imaginary.nii')
+for ii = 1:length(dir_imag)
+tmp = load_nii(dir_imag(ii).name)
+imag_all(:,:,:,ii)=tmp.img;
+end
+cplx_img = double(real_all) + 1i * double(imag_all);
+mag = abs(cplx_img);
+phs = angle(cplx_img);
+tmp_mag = load_nii(dir_real(1).name);
+tmp_mag.fileprefix = '103_3D_Ax_QSM_mag'
+tmp_mag.img            = mag;      % 256×256×190×8 double
+tmp_mag.hdr.dime.dim   = [4 256 256 190 8 1 1 1];   % 4‑D, 8 echoes
+tmp_mag.hdr.dime.datatype = 64;    % 64 = double, 32 = float
+tmp_mag.hdr.dime.bitpix   = 64;    % bits per voxel must match datatype
+tmp_mag.hdr.dime.scl_slope = 1;
+tmp_mag.hdr.dime.scl_inter = 0;
+save_nii(tmp_mag,'mag.nii');
+tmp_phs = load_nii(dir_real(1).name);
+tmp_phs.img            = phs;      % 256×256×190×8 double
+tmp_phs.hdr.dime.dim   = [4 256 256 190 8 1 1 1];   % 4‑D, 8 echoes
+tmp_phs.hdr.dime.datatype = 64;    % 64 = double, 32 = float
+tmp_phs.hdr.dime.bitpix   = 64;    % bits per voxel must match datatype
+tmp_phs.hdr.dime.scl_slope = 1;
+tmp_phs.hdr.dime.scl_inter = 0;
+tmp_phs.fileprefix = '103_3D_Ax_QSM_phs'
+save_nii(tmp_phs,'phs.nii')
+!$FSLDIR/bin/bet2 mag.nii magbet.nii -m -v -f 0.25 -w 1.1
+!gunzip -f *.nii.gz
+!cp magbet.nii_mask.nii magbet_mask.nii
+!rm magbet.nii_mask.nii
+vals = evalc('!$FSLDIR/bin/fslstats magbet_mask.nii -C');
+vals = strtrim(vals);
+coords = ceil(str2double(split(vals)));
+tmpmask = load_nii('magbet_mask.nii');
+SeedReg = zeros(size(tmpmask.img));
+SeedReg(coords(1),coords(2),coords(3))=1;
+tmpmask.img = SeedReg;
+save_nii(tmp,'SeedReg.nii')
+eval(sprintf('!mkdir ../../../LiptonDistortionInsomnia/%s', dirlist(jj).name))
+eval(sprintf('!cp mag.nii ../../../LiptonDistortionInsomnia/%s/mag.nii', dirlist(jj).name))
+eval(sprintf('!cp phs.nii ../../../LiptonDistortionInsomnia/%s/phs.nii', dirlist(jj).name))
+eval(sprintf('!cp outDecayNiiFile.nii ../../../LiptonDistortionInsomnia/%s/outDecayNiiFile.nii', dirlist(jj).name))
+eval(sprintf('!cp SeedReg.nii ../../../LiptonDistortionInsomnia/%s/SeedReg.nii', dirlist(jj).name))
+eval(sprintf('!cp TEs.txt ../../../LiptonDistortionInsomnia/%s/TEs.txt', dirlist(jj).name))
+pause(5)
+cd ../../../
+end
