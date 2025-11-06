@@ -1,4 +1,4 @@
-function [phsimg,t2stack] = GE_MRE_RemaskProcessingPart1(dx,dy,dz,freq)
+function [phsimg] = GE_MRE_RemaskProcessingPart1(dx,dy,dz,freq)
 %% Section 1 of the MRE Processing Code
 % GE_MRE_Processing Part 1
 % March 26th 2025

@@ -74,7 +74,7 @@ save magimg magimg
 
 %%
 % GM build in distortion correction
-%GE_MRE_DistortionCorrection
+GE_MRE_DistortionCorrection
 %end
 
 t2stack = mean(mean(magimg,5),4);
@@ -89,7 +89,7 @@ save_nii(t2nii,'t2stack.nii')
 !rm t2bet.nii_mask.nii
 
 tmp = load_nii('t2mask.nii');
-seD1 = strel('diamond',0); 
+seD1 = strel('diamond',1); 
 %imerode gets ride of the extra one bad voxel at the edge
 mask = imerode(double(permute(flip(flip(tmp.img,1),2),[2 1 3])),seD1);
 save t2mask_bet.mat mask

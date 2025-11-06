@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Local base path
-local_path="/Volumes/McIlvainDrive2/Lipton_Soccer_Study/SUBJECT_DATA"
+local_path="/Volumes/McIlvainDrive2/Lipton_Lifespan/SUBJECT_DATA"
 
 # Remote base path
 remote_path="/insomnia001/depts/mcilvain/users/mcilvain/Registrations"
@@ -12,14 +12,14 @@ temp_download_subject="$local_path/TEMP_TRANSFER_DATA"
 # Clean temp subjectectory
 
 mksubject "$temp_download_subject"
-
+ 
 # Get list of local subjects matching pattern
 subjects=($(find "$local_path" -maxdepth 1 -type d -name '2023-U*' -exec basename {} \;))
 
 # Convert array to space-separated string
 subject_list="${subjects[@]}"
 
-echo "Checking remote subjectectories..."
+echo "Checking remote directories..."
 # SSH once to check which subjects exist remotely
 existing_subjects=$(ssh ts3641@insomnia.rcs.columbia.edu bash <<EOF
 for subject in $subject_list; do
@@ -30,7 +30,7 @@ done
 EOF
 )
 
-# Filter to get only the subjectectories that don't already exist locally
+#Filter to get only the directories that don't already exist locally
 new_subjects=$(for exist in $existing_subjects; do 
     if [ ! -d "$local_path/$exist/Registrations" ]; then
         echo "$exist"

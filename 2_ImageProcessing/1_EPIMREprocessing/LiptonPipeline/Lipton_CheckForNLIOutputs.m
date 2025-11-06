@@ -26,9 +26,10 @@ for ii=1:length(dirlist)
         [status, result] = system(checkCmd);
 
         if status == 0
+            %TS changed 09/24/25
             %system(sprintf('scp -r gm3128@insomnia.rcs.columbia.edu:/insomnia001/depts/mcilvain/users/mcilvain/%s .', SubjectName));
-            system(sprintf('scp -r ts3641@insomnia.rcs.columbia.edu:/insomnia001/depts/mcilvain/users/mcilvain/%s .', SubjectName));
-            cd(SubjectName)
+            system(sprintf('scp -r ts3641@insomnia.rcs.columbia.edu:/insomnia001/depts/mcilvain/users/mcilvain/%s NLI_Outputs', SubjectName));
+            cd('NLI_Outputs')
             MRE_v9_process_folder
 
             cd hex;
@@ -59,8 +60,6 @@ for ii=1:length(dirlist)
 
         %cd ..
         
-        pwd %UNCOMMENT HERE
-
         % mkdir('nli_outputs')
         % save nli_outputs/Mu.mat Mu
         % save nli_outputs/DR.mat DR
@@ -68,7 +67,8 @@ for ii=1:length(dirlist)
         % print('-dpng','-r300',sprintf('nli_outputs/Mu_%s',dirlist(ii).name(1:end-4)))
 
         %TS added 56-93 on May 1
-        movefile(SubjectName, 'NLI_Outputs');
+        %movefile(SubjectName, 'NLI_Outputs');
+        pwd
         mkdir('Nifti_Data');
 
         load(fullfile('NLI_Outputs', 'Mu.mat'));

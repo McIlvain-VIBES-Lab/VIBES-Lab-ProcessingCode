@@ -12,7 +12,21 @@ addpath('/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/1_StartupCode');
 addpath(code_path);
 addpath(common_code_path)
 startup_matlab_general
+
+
+% TS added 11/4/25 for log files and sending pulling back from insomnia
+delete('log/PostNLI_complete.txt')
+delete('log/PreNLI_complete.txt')
+
 [~, SubjectName] = system('basename "$PWD"');
+
+logFilePath = fullfile('log/Remasking.txt');
+fid = fopen(logFilePath, 'a');
+if fid ~= -1
+    fprintf(fid, 'Remasking for  subject: %s\n', SubjectName);
+    fclose(fid);
+end
+
 
 SubjectName = strtrim(SubjectName); 
 disp(['SubjectName = ', SubjectName])
@@ -20,7 +34,7 @@ disp(['SubjectName = ', SubjectName])
 subjpath = pwd; 
 load t2stack.mat
 load t2mask_final.mat
-load imgraw_ep2d.mat
+%load imgraw_ep2d.mat
 !cp -r NLI_Outputs/ NLI_OutputsA1
 !cp mre_for_inversion.mat mre_for_inversionA1.mat
 
@@ -119,7 +133,8 @@ end
 cd ..
 save(sprintf('mre_for_inversion.mat'),'mreParams','mask','Zmotion','Ymotion','Xmotion','t2stack', 'OSS_SNR')
 
-addpath(fullfile('/Volumes/McIlvainDrive2/Lipton_Soccer_Study/SUBJECT_DATA', SubjectName))
+%addpath(fullfile('/Volumes/McIlvainDrive2/Lipton_Soccer_Study/SUBJECT_DATA', SubjectName))
+addpath(fullfile('/Volumes/McIlvainDrive2/Lipton_Lifespan/SUBJECT_DATA', SubjectName))
 load('mre_for_inversion.mat')
 save(sprintf('%s.mat',SubjectName),'mreParams','mask','Zmotion','Ymotion','Xmotion','t2stack','OSS_SNR')
 UIUC_data_convert_mcilvain(SubjectName)
@@ -142,11 +157,24 @@ insomniapath = ['/insomnia001/depts/mcilvain/users/mcilvain/', SubjectName, '/he
 %system(sprintf('ssh gm3128@insomnia.rcs.columbia.edu "cd /%s/ && sbatch McIlvain-Submitv9_visc_incomp"',insomniapath))
 system(sprintf('ssh ts3641@insomnia.rcs.columbia.edu "cd /%s/ && sbatch McIlvain-Submitv9_visc_incomp"',insomniapath))
 
+% TS added 11/4/25 for log files and sending pulling back from insomnia23
+delete('log/Remasking.txt')
 
+[~, SubjectName] = system('basename "$PWD"');
 
-%% Section 4
-%disp("Running Freesurfer on Insomnia")
-%system(['sh /Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline/freesurfer_insomnia.sh']);
+logFilePath = fullfile('log/Remasked.txt');
+fid = fopen(logFilePath, 'a');
+if fid ~= -1
+    fprintf(fid, 'Remasked NLI for subject: %s\n', SubjectName);
+    fclose(fid);
+end
+logFilePath = fullfile('log/PreNLI_complete.txt');
+fid = fopen(logFilePath, 'a');
+if fid ~= -1
+    fprintf(fid, 'Pre-NLI processing complete for subject: %s\n', SubjectName);
+    fclose(fid);
+end
+
 %% Section 5
 movefile NLI_OutputsA1/ BadMask
 movefile mre_for_inversionA1.mat BadMask

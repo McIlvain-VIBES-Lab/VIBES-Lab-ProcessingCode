@@ -7,7 +7,7 @@ addpath(code_path);
 addpath(common_code_path)
 startup_matlab_general
 !rm ._*
-dirlist = dir('Ax*');
+dirlist = dir('Brains_Dead_Gel_06_01_70Hz*');
 dirlist = dirlist([dirlist.isdir]);  % keep only directories
 dirlist = dirlist(~ismember({dirlist.name}, {'.', '..'}));  % exclude . and ..
 for ii=1:length(dirlist)
@@ -24,11 +24,11 @@ insomniapath = ['/insomnia001/depts/mcilvain/users/mcilvain/', SubjectName, '/he
 %cd(sprintf('/insomnia001/depts/mcilvain/users/mcilvain/%s/hex/%s_voxelmesh',SubjectName,SubjectName));
 
 filePattern = '*0100.prop*';
-checkCmd = sprintf('ssh gm3128@insomnia.rcs.columbia.edu "ls %s/inv/%s > /dev/null 2>&1"', insomniapath, filePattern);
+checkCmd = sprintf('ssh ts3641@insomnia.rcs.columbia.edu "ls %s/inv/%s > /dev/null 2>&1"', insomniapath, filePattern);
 [status, result] = system(checkCmd);
 
 if status == 0
-system(sprintf('scp -r gm3128@insomnia.rcs.columbia.edu:/insomnia001/depts/mcilvain/users/mcilvain/%s .', SubjectName));
+system(sprintf('scp -r ts3641@insomnia.rcs.columbia.edu:/insomnia001/depts/mcilvain/users/mcilvain/%s .', SubjectName));
 cd(SubjectName)
 !rm ._*
 cd hex
@@ -63,7 +63,7 @@ Mu = 2*(AbsShear.^2)./(RealShear+AbsShear);
 save ComplexShear.mat ComplexShear
 save AbsShear.mat AbsShear
 save Mu.mat Mu
-figure;im(Mu(:,:,:)); caxis([0 30000]); colorbar; colormap(gca,stiff_color);
+figure;im(Mu(:,:,:)); caxis([0 80000]); colorbar; colormap(gca,stiff_color);
 print('-dpng','-r300',sprintf('Mu_%s',dirlist(ii).name(1:end)))
 end
 

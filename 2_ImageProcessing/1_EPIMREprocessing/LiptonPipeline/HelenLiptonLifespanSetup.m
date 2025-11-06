@@ -1,4 +1,4 @@
-function [info,SubjectName] = LiptonSoccerSetup(subjpath,code_path)
+function [info,SubjectName] = HelenLiptonLifespanSetup(subjpath,code_path)
 disp('Setting Up Files')
 disp('Do Not Change Your Location')
 %code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline';
@@ -8,9 +8,8 @@ cd (subjpath);
 % TS 9/27/25
 %Creates an Is Running File
 mkdir('log')
-%mkdir(fullfile(pwd, 'log')) %- Helen
 
-expected_root = '/Volumes/McIlvainDrive2/Lipton_Soccer_Study/SUBJECT_DATA';
+expected_root = '/Volumes/McIlvainDrive2/Lipton_Lifespan/SUBJECT_DATA';
 current_path = pwd;
 
 [~, subj_id, ~] = fileparts(current_path);
@@ -59,7 +58,7 @@ for i = 1:length(dir_list)
         end
     end
 
-    if dir_list(i).isdir && (startsWith(dir_list(i).name, '102_T1W_3D_TFE') ) %|| startsWith(dir_list(i).name, 'ORIG_102_T1W_3D_TFE'))
+    if dir_list(i).isdir && (startsWith(dir_list(i).name, '102_T1W_3D_TFE') ) % || startsWith(dir_list(i).name, 'ORIG_102_T1W_3D_TFE'))
         try
             movefile(dir_list(i).name, ['..' filesep 'T1W_3D_TFE']);
         catch ME

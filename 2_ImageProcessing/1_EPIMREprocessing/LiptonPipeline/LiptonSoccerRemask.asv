@@ -36,8 +36,8 @@ dy = (info.ReconstructionDiameter)/double(info.Width);
 dz = info.SliceThickness; 
 freq =double(50); % TS: We need to check where the frequency is in the header
 
-cd('Ax_BRAIN_MRE')
-[phsimg] = GE_MRE_RemaskProcessingPart1(dx,dy,dz,freq); 
+%cd('Ax_BRAIN_MRE')
+[phsimg,t2stack] = GE_MRE_RemaskProcessingPart1(dx,dy,dz,freq); 
 
 %% Manual Masking (Human Brain)
 close all;
@@ -95,7 +95,7 @@ while true
     % Ask the user whether they are satisfied with the mask
     continue_input = input('Please enter Y if you are satisfied with your mask or N if you would like to make changes: ', 's');
     
-    % If user is  satisfied, break out of the while loop
+    % If user is satisfied, break out of the while loop
     if strcmpi(continue_input, 'Y' )
         disp('User is satisfied with the mask.');
         break;
@@ -149,6 +149,6 @@ system(sprintf('ssh ts3641@insomnia.rcs.columbia.edu "cd /%s/ && sbatch McIlvain
 %system(['sh /Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline/freesurfer_insomnia.sh']);
 %% Section 5
 movefile NLI_OutputsA1/ BadMask
-movefile mre_for_inversionA1.mat BadMask
+movefile mre_for_inversionA1./ BadMask
 
 movefile BadMask Archive/

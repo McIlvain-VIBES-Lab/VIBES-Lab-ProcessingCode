@@ -7,7 +7,7 @@ delete(gcp('nocreate'));
 disp('Code Starting Please Wait')
 
 code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline';
-common_code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/';
+common_code_path = ['/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/'];
 addpath('/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/1_StartupCode');
 addpath(code_path);
 addpath(common_code_path)
@@ -19,7 +19,7 @@ startup_matlab_general
 % function added by TS March 26th 2025
 % This will rename the subject dir and pull&name T1W and Ax_Brain
 subjpath = pwd; 
-[info] = LiptonSoccerSetup(subjpath,code_path);
+[info,SubjectName] = LiptonSoccerSetup(subjpath,code_path);
 
 % Section 1
 dx = (info.ReconstructionDiameter)/double(info.Height);
@@ -89,7 +89,7 @@ while true
 
     % Display the final mask to check if it's correct
     figure; 
-    im(tmp .* mask .* abs(1 - maskx)); 
+    im(tmp .* mask .* abs(1-maskx)); 
     caxis([0 1]);
 
     % Ask the user whether they are satisfied with the mask
@@ -108,6 +108,7 @@ while true
     end
 end
 
+
 %% Section 2
 !mkdir dcfiles
 [mreParams,mask,Zmotion,Ymotion,Xmotion,t2stack,OSS_SNR] = GE_MRE_ProcessingPart2(phsimg,t2stack,mask,dx,dy,dz,freq);
@@ -117,9 +118,29 @@ end
 LiptonCleanData(mreParams,mask,Zmotion,Ymotion,Xmotion,t2stack,OSS_SNR)
 
 %% Section 4
-disp("Running Freesurfer on Insomnia")
+%disp("Running Freesurfer on Insomnia")
 system(['sh /Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline/freesurfer_insomnia.sh']);
 
+%% Section 5 
+% TS 9/27/25
+% Delete the IsRunning File and creates a complete file 
+delete(fullfile('log', 'PreNLI_processing.txt'));
+
+logFilePath = fullfile('log/PreNLI_complete.txt');
+fid = fopen(logFilePath, 'a');
+if fid ~= -1
+    fprintf(fid, 'Pre-NLI processing complete for subject: %s\n', SubjectName);
+    fclose(fid);
+end
+
+logFilePath = fullfile('log/FS_processing.txt');
+fid = fopen(logFilePath, 'a');
+if fid ~= -1
+    fprintf(fid, 'FreeSurfer running for subject: %s\n', SubjectName);
+    fclose(fid);
+end
+
+%TS Needs to move Section 5 
 %% Section 5
-disp("Running Registerations on Insomnia")
-system(['sh /Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline/reg_insomnia.sh'])
+%disp("Running Registerations on Insomnia")
+%system(['sh /Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline/reg_insomnia.sh'])

@@ -28,14 +28,14 @@ save uniqueTEs uniqueTEs
 
 %%
 
-dir_real = dir('*QSM*_e*_real.nii')
+dir_real = dir('*3D_Ax_QSM*_e*_real.nii')
 for ii = 1:length(dir_real)
     tmp = load_nii(dir_real(ii).name)
     real_all(:,:,:,ii)=tmp.img;
 end
 
 
-dir_imag = dir('*QSM*_e*_imaginary.nii')
+dir_imag = dir('*3D_Ax_QSM*_e*_imaginary.nii')
 for ii = 1:length(dir_imag)
     tmp = load_nii(dir_imag(ii).name)
     imag_all(:,:,:,ii)=tmp.img;
@@ -79,17 +79,19 @@ SeedReg(coords(1),coords(2),coords(3))=1;
 tmpmask.img = SeedReg;
 save_nii(tmp,'SeedReg.nii')
 
-eval(sprintf('!mkdir %s', SubjectName))
-eval(sprintf('!cp mag.nii %s/mag.nii', SubjectName))
-eval(sprintf('!cp phs.nii %s/phs.nii', SubjectName))
-%eval(sprintf('!cp outDecayNiiFile.nii %s/outDecayNiiFile.nii', SubjectName))
-eval(sprintf('!cp SeedReg.nii %s/SeedReg.nii', SubjectName))
-eval(sprintf('!cp TEs.txt %s/TEs.txt', SubjectName))
-addpath(SubjectName)
-%eval(sprintf('!scp -r %s ts3641@insomnia.rcs.columbia.edu:/insomnia001/depts/mcilvain/users/mcilvain/LiptonDistortionInsomnia/', SubjectName))
-%pause(20)
-%insomniapath = ['/insomnia001/depts/mcilvain/users/mcilvain/LiptonDistortionInsomnia/'];
-%system(sprintf('ssh ts3641@insomnia.rcs.columbia.edu "cd /%s/ && sbatch --job-name=$(basename %s) SubmitScript %s/"',insomniapath,SubjectName,SubjectName))
+eval(sprintf('!mkdir ../../../%s', SubjectName))
+eval(sprintf('!cp mag.nii ../../../%s/mag.nii', SubjectName))
+eval(sprintf('!cp phs.nii ../../../%s/phs.nii', SubjectName))
+eval(sprintf('!cp outDecayNiiFile.nii ../../../%s/outDecayNiiFile.nii', SubjectName))
+eval(sprintf('!cp SeedReg.nii ../../../%s/SeedReg.nii', SubjectName))
+eval(sprintf('!cp TEs.txt ../../../%s/TEs.txt', SubjectName))
+
+eval(sprintf('!scp -r %s ts3641@insomnia.rcs.columbia.edu:/insomnia001/depts/mcilvain/users/mcilvain/LiptonDistortionInsomnia/%s', SubjectName))
+pause(20)
+insomniapath = ['/insomnia001/depts/mcilvain/users/mcilvain/', SubjectName, '/hex/', SubjectName, '_voxelmesh'];
+eval(sprintf('sbatch --job-name=$(basename %s) SubmitScript %s/',SubjectName,SubjectName))
+
+system(sprintf('ssh ts3641@insomnia.rcs.columbia.edu "cd /%s/ && sbatch McIlvain-Submitv9_visc_incomp"',insomniapath))
 
 
 

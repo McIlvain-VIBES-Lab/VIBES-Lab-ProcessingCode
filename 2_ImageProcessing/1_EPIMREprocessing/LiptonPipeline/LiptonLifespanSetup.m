@@ -1,15 +1,25 @@
-function [info] =LiptonLifespanSetup(subjpath)
+function [info,SubjectName] = LiptonLifespanSetup(subjpath,code_path)
 disp('Setting Up Files')
 disp('Do Not Change Your Location')
-code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline';
-addpath(code_path);
+%code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline';
+%addpath(code_path);
 
 cd (subjpath); 
+% TS 9/27/25
+%Creates an Is Running File
+mkdir('log')
+
 expected_root = '/Volumes/McIlvainDrive2/Lipton_Lifespan/SUBJECT_DATA';
 current_path = pwd;
 
 [~, subj_id, ~] = fileparts(current_path);
 
+logFilePath = fullfile('log/PreNLI_processing.txt');
+fid = fopen(logFilePath, 'a');
+if fid ~= -1
+    fprintf(fid, 'Pre-NLI processing is Running for subject: %s\n', subj_id);
+    fclose(fid);
+end
 
 if startsWith(current_path, expected_root)
     disp('The current path is correct.');
@@ -34,16 +44,39 @@ for i = 1:length(dir_list)
         continue;
     end
 
-    if dir_list(i).isdir && startsWith(dir_list(i).name, 'Ax_BRAIN_MRE')
-        movefile(dir_list(i).name, ['..' filesep 'Ax_BRAIN_MRE']);
+for i = 1:length(dir_list)
+    if strcmp(dir_list(i).name, '.') || strcmp(dir_list(i).name, '..')
+        continue;
     end
 
-    if dir_list(i).isdir && (startsWith(dir_list(i).name, '102_T1W_3D_TFE') || startsWith(dir_list(i).name, 'ORIG_102_T1W_3D_TFE'))
-        movefile(dir_list(i).name, ['..' filesep 'T1W_3D_TFE']);
+    if dir_list(i).isdir && startsWith(dir_list(i).name, 'Ax_BRAIN_MRE')
+        try
+            movefile(dir_list(i).name, ['..' filesep 'Ax_BRAIN_MRE']);
+        catch ME
+            fprintf('Could not move folder %s: %s\n', dir_list(i).name, ME.message);
+            continue;
+        end
     end
-    if dir_list(i).isdir && startsWith(dir_list(i).name, 'QSM')
-        movefile(dir_list(i).name, ['..' filesep 'QSM']);
+
+    if dir_list(i).isdir && (startsWith(dir_list(i).name, '102_T1W_3D_TFE') ) % || startsWith(dir_list(i).name, 'ORIG_102_T1W_3D_TFE'))
+        try
+            movefile(dir_list(i).name, ['..' filesep 'T1W_3D_TFE']);
+        catch ME
+            fprintf('Could not move folder %s: %s\n', dir_list(i).name, ME.message);
+            continue;
+        end
     end
+
+    if dir_list(i).isdir && startsWith(dir_list(i).name, '103_3D_Ax_QSM')
+        try
+            movefile(dir_list(i).name, ['..' filesep 'QSM']);
+        catch ME
+            fprintf('Could not move folder %s: %s\n', dir_list(i).name, ME.message);
+            continue;
+        end
+    end
+end
+
 end
 cd ..
 
@@ -51,13 +84,15 @@ mkdir('Archive');
 mkdir('Test_Dev');
 
 disp('Changing Subject Folder Name')
-dir1 = dir('Ax_BRAIN_MRE/*dcm');
+dir1 = dir('Ax_BRAIN_MRE/*.dcm');
 info = dicominfo(fullfile('Ax_BRAIN_MRE', dir1(1).name));
+SubjectName = info.PatientID;
 new_folder = fullfile(expected_root, info.PatientID);
 movefile(current_path, new_folder);
 disp(new_folder)
 cd(new_folder)
-rmdir(current_path, 's');
 
+
+rmdir(current_path, 's');
 
 

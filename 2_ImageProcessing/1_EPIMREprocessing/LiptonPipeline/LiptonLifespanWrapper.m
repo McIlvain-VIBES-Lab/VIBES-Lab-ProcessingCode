@@ -19,7 +19,7 @@ startup_matlab_general
 % function added by TS March 26th 2025
 % This will rename the subject dir and pull&name T1W and Ax_Brain
 subjpath = pwd; 
-[info] = LiptonLifespanSetup(subjpath);
+[info,SubjectName] = LiptonLifespanSetup(subjpath);
 
 % Section 1
 dx = (info.ReconstructionDiameter)/double(info.Height);
@@ -139,3 +139,22 @@ LiptonCleanData(mreParams,mask,Zmotion,Ymotion,Xmotion,t2stack,OSS_SNR)
 %% Section 4
 disp("Running Freesurfer on Insomnia")
 system(['sh /Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline/freesurfer_insomnia.sh']);
+
+%% Section 5 
+% TS 9/27/25
+% Delete the IsRunning File and creates a complete file 
+delete(fullfile('log', 'PreNLI_processing.txt'));
+
+logFilePath = fullfile('log/PreNLI_complete.txt');
+fid = fopen(logFilePath, 'a');
+if fid ~= -1
+    fprintf(fid, 'Pre-NLI processing complete for subject: %s\n', SubjectName);
+    fclose(fid);
+end
+
+logFilePath = fullfile('log/FS_processing.txt');
+fid = fopen(logFilePath, 'a');
+if fid ~= -1
+    fprintf(fid, 'FreeSurfer running for subject: %s\n', SubjectName);
+    fclose(fid);
+end
