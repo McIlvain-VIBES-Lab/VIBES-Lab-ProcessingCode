@@ -170,13 +170,19 @@ system(sprintf('ssh ts3641@insomnia.rcs.columbia.edu "cd /%s/ && sbatch McIlvain
 %end 
 
 
-%%
+%% Check for NLI Outputs
+code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline';
+common_code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/';
+addpath('/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/1_StartupCode');
+addpath(code_path);
+addpath(common_code_path)
+startup_matlab_general
 
 
-SubjectName ='Helen4-2023-U7487-0706-VP-';
-system(sprintf('scp -r gm3128@insomnia.rcs.columbia.edu:/insomnia001/depts/mcilvain/users/mcilvain/%s .', SubjectName));
+SubjectName ='Helen5-2023-U7487-0706-VP-01_ZS';
+system(sprintf('scp -r ts3641@insomnia.rcs.columbia.edu:/insomnia001/depts/mcilvain/users/mcilvain/%s .', SubjectName));
 cd(SubjectName)
-% MRE_v9_process_folder
+MRE_v9_process_folder
 
 cd hex;
 dir2 = dir('*voxelmesh');
