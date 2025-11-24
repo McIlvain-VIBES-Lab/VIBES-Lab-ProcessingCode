@@ -75,7 +75,7 @@ t2nii = make_nii(flipdim(flipdim(permute(t2stack,[2 1 3]),1),2),[dy dx dz]);
 save_nii(t2nii,'t2stack.nii')
 
 
-!$FSLDIR/bin/bet2 t2stack.nii t2bet.nii -m -v -f 0.25 -w 1.3
+!$FSLDIR/bin/bet2 t2stack.nii t2bet.nii -m -v -f 0.4 -w 1.3
 !gunzip -f t2bet.nii_mask.nii.gz
 !gunzip -f t2bet.nii.gz
 !cp t2bet.nii_mask.nii t2mask.nii
@@ -102,7 +102,7 @@ figure;im(tmp);caxis([0 1])
 figure;im(tmp.*mask.*abs(1-maskx));caxis([0 1])
 
 
-for ss = 8:-1:8
+for ss = 55:-1:1
     ss
     maskx(:,:,ss) = double(roipoly(tmp(:,:,ss)));
 end

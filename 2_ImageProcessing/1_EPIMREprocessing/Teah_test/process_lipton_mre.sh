@@ -1,4 +1,8 @@
 #!/bin/bash
+
+#Script to make NIFTIs into the correct format for Lipton Lab 
+#Note: We are now using this script for other studies 
+
 export FSLDIR=/Users/vibes_1/fsl
 source $FSLDIR/etc/fslconf/fsl.sh
 

@@ -74,7 +74,7 @@ save magimg magimg
 
 %%
 % GM build in distortion correction
-GE_MRE_DistortionCorrection
+%GE_MRE_DistortionCorrection
 %end
 
 t2stack = mean(mean(magimg,5),4);

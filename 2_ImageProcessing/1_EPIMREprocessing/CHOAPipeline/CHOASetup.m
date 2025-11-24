@@ -43,7 +43,7 @@ for i = 1:length(dir_list)
     if dir_list(i).isdir && (contains(dir_list(i).name, 'XA60_Mag'))  
         movefile(dir_list(i).name, ['../' filesep 'MRE_3D_AX_ON_AXIS_Mag']);
     end
-    if dir_list(i).isdir && startsWith(dir_list(i).name, 'Brain_MRE_C2P_XA60_P_P')
+    if dir_list(i).isdir && startsWith(dir_list(i).name, 'XA60_P_P')
         movefile(dir_list(i).name, ['../' filesep 'MRE_3D_AX_ON_AXIS_P_P']);
     end
 end

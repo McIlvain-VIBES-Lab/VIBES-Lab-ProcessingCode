@@ -1,0 +1,59 @@
+function VarianCleanData(mreParams,mask,Zmotion,Ymotion,Xmotion,t2stack,OSS_SNR)
+
+%% Section 3 of the MRE Processing Code
+% Clean Varian Data 
+% November 20 2025
+% Grace McIlvain Teah Serani
+% Clean Up data
+
+mkdir('File_Storage')
+!mv Ax_Brain_MRE/ File_Storage
+!mv study/ File_Storage
+!mv SAGITTAL_T1_VOLUME/ File_Storage/
+!mv dcfiles/ File_Storage/
+
+
+!mv maskx.mat File_Storage/
+!mv mre_mag.nii File_Storage/
+!mv mre_phs.nii File_Storage/
+!mv mre_mask.nii File_Storage/
+!mv mre_output.nii File_Storage/
+!mv OSS_SNR.mat File_Storage/
+
+
+!mv mreimages_unwrap.mat File_Storage/
+!mv t2mask_bet.mat File_Storage/
+% 
+% 
+% Copy To NLI Folder
+[~, SubjectName] = system('basename "$PWD"');
+
+SubjectName = strtrim(SubjectName); 
+disp(['SubjectName = ', SubjectName])
+
+addpath(fullfile('/Volumes/McIlvainDrive2/Varian_Study/SUBJECT_DATA', SubjectName))
+load('mre_for_inversion.mat')
+save(sprintf('%s.mat',SubjectName),'mreParams','mask','Zmotion','Ymotion','Xmotion','t2stack','OSS_SNR')
+UIUC_data_convert_mcilvain(SubjectName)
+cd(sprintf('%s',SubjectName))
+MRE_preprocess_v9_mcilvain('default',SubjectName)
+eval(sprintf('!mv %s.mat %s/',SubjectName,SubjectName))
+cd ..
+%eval(sprintf('!mv %s.mat /Volumes/McIlvainDrive2/Send_to_NLI',SubjectName))
+%eval(sprintf('!mv %s /Volumes/McIlvainDrive2/Send_to_NLI',SubjectName))
+
+% Ready for Testing (in liu of lines 34 and 35):
+
+%TS 9/2/25 changed to my account because I already had a passkey on the
+%computer we need to change it back 
+%system(sprintf('scp -r %s gm3128@insomnia.rcs.columbia.edu:/insomnia001/depts/mcilvain/users/mcilvain/',SubjectName)); 
+
+system(sprintf('scp -r %s ts3641@insomnia.rcs.columbia.edu:/insomnia001/depts/mcilvain/users/mcilvain/',SubjectName)); 
+pause(20)
+insomniapath = ['/insomnia001/depts/mcilvain/users/mcilvain/', SubjectName, '/hex/', SubjectName, '_voxelmesh'];
+%system(sprintf('ssh gm3128@insomnia.rcs.columbia.edu "cd /%s/ && sbatch McIlvain-Submitv9_visc_incomp"',insomniapath))
+system(sprintf('ssh ts3641@insomnia.rcs.columbia.edu "cd /%s/ && sbatch McIlvain-Submitv9_visc_incomp"',insomniapath))
+
+
+
+end

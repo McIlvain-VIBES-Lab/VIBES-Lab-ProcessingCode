@@ -827,6 +827,7 @@ for ii=1:dim(1)
                 ss=size(subreg);
                 Hc=H(la(1):la(1)+ss(1)-1,la(2):la(2)+ss(2)-1,la(3):la(3)+ss(3)-1);
                 Hmsk=submask.*Hc;
+                % Hmsk = double(submask) .* double(Hc); % helen
                 Hmsk=Hmsk./sum(Hmsk(:));
                 stackout(ii,jj,kk)=sum(Hmsk(:).*subreg(:));                
             end             

@@ -43,6 +43,7 @@ if(length(f)>3)
     end
     meshfold=input(['Which mesh to process (default ' f(3).name ') >> '],'s');
     if(isempty(meshfold))
+        disp(f(3).name)
         cd([f(3).name '/inv'])
     else
         cd([meshfold '/inv'])

@@ -2,16 +2,16 @@
 clear all; close all;
 delete(gcp('nocreate'));
 
-code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/LiptonPipeline';
+code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/VarianPipeline';
 common_code_path = '/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/';
 addpath('/Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/1_StartupCode');
 addpath(code_path);
 addpath(common_code_path)
 startup_matlab_general
 
-system(['bash /Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/Teah_test/nli_push.sh'])
+system(['bash /Volumes/McIlvainDrive2/VIBES-Lab-ProcessingCode/2_ImageProcessing/1_EPIMREprocessing/Teah_test/nli_pull_varian.sh'])
 
-dirlist = dir('*-*');
+dirlist = dir('U2309*');
 dirlist = dirlist([dirlist.isdir]);  % keep only directories
 dirlist = dirlist(~ismember({dirlist.name}, {'.', '..'})); 
 

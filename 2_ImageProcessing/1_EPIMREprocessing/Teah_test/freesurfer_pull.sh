@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set local path and directories to check
-local_path="/Volumes/McIlvainDrive2/Lipton_Lifespan/SUBJECT_DATA"
+local_path="/Volumes/McIlvainDrive2/Lipton_Soccer_Study/SUBJECT_DATA"
 remote_path="/insomnia001/depts/mcilvain/users/mcilvain/FreeSurferOutputs"
 
 # Get list of subject directories (2023-U*)
@@ -114,7 +114,7 @@ done
 rsync -avz --relative --progress "${rsync_sources[@]}" "$temp_download_subject"
 
 echo "local_path is: $local_path"
-relative_path="/Volumes/McIlvainDrive2/Lipton_Lifespan/SUBJECT_DATA/TEMP_TRANSFER_DATA/insomnia001/depts/mcilvain/users/mcilvain/FreeSurferOutputs/"
+relative_path="/Volumes/McIlvainDrive2/Lipton_Soccer_Study/SUBJECT_DATA/TEMP_TRANSFER_DATA/insomnia001/depts/mcilvain/users/mcilvain/FreeSurferOutputs/"
 
 for subj in $error_subjects; do
     echo "Moving error for subject: $subj"
